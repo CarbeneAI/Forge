@@ -1,0 +1,12 @@
+{
+  "name": "semantic-memory",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "sqlite-vec": "^0.1.6",
+    "chokidar": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}

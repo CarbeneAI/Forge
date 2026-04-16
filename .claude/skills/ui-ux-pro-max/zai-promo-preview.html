@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z.AI Promo Section - Preview</title>
+    <style>
+        /* Reset & Base Styles */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        /* Preview Container */
+        .preview-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .preview-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .preview-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-header p {
+            font-size: 1.125rem;
+            opacity: 0.9;
+        }
+
+        /* Placeholder for surrounding content */
+        .content-placeholder {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .content-placeholder h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .content-placeholder p {
+            opacity: 0.8;
+        }
+
+        /* Dark mode toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Dark mode */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+        }
+
+        /* Info bar */
+        .info-bar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .info-item {
+            color: white;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-item strong {
+            font-weight: 600;
+        }
+
+        /* Responsive info */
+        @media (max-width: 768px) {
+            .preview-header h1 {
+                font-size: 2rem;
+            }
+
+            .info-bar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+        🌙 Dark Mode
+    </button>
+
+    <div class="preview-container">
+        <!-- Preview Header -->
+        <div class="preview-header">
+            <h1>Z.AI Promo Section Preview</h1>
+            <p>Redesigned with premium token button • Glassmorphism design • Conversion optimized</p>
+        </div>
+
+        <!-- Info Bar -->
+        <div class="info-bar">
+            <div class="info-item">
+                <strong>✓ WCAG AA Compliant</strong>
+            </div>
+            <div class="info-item">
+                <strong>✓ Fully Responsive</strong>
+            </div>
+            <div class="info-item">
+                <strong>✓ CSS-Only Animations</strong>
+            </div>
+            <div class="info-item">
+                <strong>✓ Glassmorphism Design</strong>
+            </div>
+            <div class="info-item">
+                <strong>✓ Reduced Motion Support</strong>
+            </div>
+        </div>
+
+        <!-- Content Placeholder: Above -->
+        <div class="content-placeholder">
+            <h2>PRICING COMPARISON SECTION</h2>
+            <p>This represents the content that appears before the promo section</p>
+        </div>
+
+        <!-- Z.AI PROMO SECTION START -->
+        <section class="zai-promo-section">
+            <div class="zai-glass-card">
+                <!-- Badge -->
+                <div class="zai-badge">
+                    <span class="zai-badge-icon">✨</span>
+                    <span class="zai-badge-text">Limited Time Offer</span>
+                </div>
+
+                <!-- Main Content -->
+                <div class="zai-content">
+                    <div class="zai-left">
+                        <h2 class="zai-heading">
+                            Supercharge with <span class="zai-gradient-text">Z.AI</span>
+                        </h2>
+                        <p class="zai-subheading">
+                            Unlock GLM 4.7 - The most powerful LLM for Claude Code users
+                        </p>
+
+                        <!-- Features Grid -->
+                        <div class="zai-features">
+                            <div class="zai-feature">
+                                <svg class="zai-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                                </svg>
+                                <span>Lightning Fast API</span>
+                            </div>
+                            <div class="zai-feature">
+                                <svg class="zai-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2v20M2 12h20"/>
+                                </svg>
+                                <span>40% Off Premium Plans</span>
+                            </div>
+                            <div class="zai-feature">
+                                <svg class="zai-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="M2 12h20"/>
+                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                                </svg>
+                                <span>Global Coverage</span>
+                            </div>
+                        </div>
+
+                        <!-- Secondary CTA -->
+                        <a href="https://github.rommark.dev/admin/claude-code-glm-suite" class="zai-secondary-cta" target="_blank" rel="noopener">
+                            <svg class="zai-secondary-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                            Explore GLM Suite Integration
+                        </a>
+                    </div>
+
+                    <!-- Right Side - Premium Token Button -->
+                    <div class="zai-right">
+                        <div class="zai-token-wrapper">
+                            <!-- Glow Effect Behind Token -->
+                            <div class="zai-token-glow"></div>
+
+                            <!-- Main Token Button -->
+                            <a href="https://z.ai/subscribe?ic=R0K78RJKNW" class="zai-token-button" target="_blank" rel="noopener">
+                                <!-- Token Container -->
+                                <div class="zai-token">
+                                    <!-- Outer Ring -->
+                                    <div class="zai-token-ring-outer"></div>
+
+                                    <!-- Middle Ring -->
+                                    <div class="zai-token-ring-middle"></div>
+
+                                    <!-- Inner Ring -->
+                                    <div class="zai-token-ring-inner"></div>
+
+                                    <!-- Token Face -->
+                                    <div class="zai-token-face">
+                                        <!-- Shimmer Effect -->
+                                        <div class="zai-token-shimmer"></div>
+
+                                        <!-- Logo/Icon -->
+                                        <div class="zai-token-logo">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                                            </svg>
+                                        </div>
+
+                                        <!-- Brand Name -->
+                                        <span class="zai-token-brand">Z.AI</span>
+
+                                        <!-- Discount Badge -->
+                                        <div class="zai-token-discount">
+                                            <span class="zai-discount-text">10% OFF</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CTA Text -->
+                                <div class="zai-token-cta">
+                                    <span class="zai-cta-primary">Get Started</span>
+                                    <span class="zai-cta-secondary">Unlock Premium Power</span>
+                                </div>
+                            </a>
+
+                            <!-- Floating Particles -->
+                            <div class="zai-particles">
+                                <div class="zai-particle zai-particle-1"></div>
+                                <div class="zai-particle zai-particle-2"></div>
+                                <div class="zai-particle zai-particle-3"></div>
+                                <div class="zai-particle zai-particle-4"></div>
+                            </div>
+                        </div>
+
+                        <!-- Trust Badges -->
+                        <div class="zai-trust">
+                            <div class="zai-trust-item">
+                                <svg class="zai-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                </svg>
+                                <span>Secure Payment</span>
+                            </div>
+                            <div class="zai-trust-item">
+                                <svg class="zai-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                                <span>24/7 Support</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Z.AI PROMO SECTION END -->
+
+        <!-- Content Placeholder: Below -->
+        <div class="content-placeholder">
+            <h2>FINAL CTA SECTION</h2>
+            <p>This represents the content that appears after the promo section</p>
+        </div>
+    </div>
+
+    <style>
+        /* ===== Z.AI PROMO SECTION STYLES ===== */
+
+        /* CSS Variables for Easy Customization */
+        :root {
+            --zai-primary: #6366f1;
+            --zai-primary-dark: #4f46e5;
+            --zai-secondary: #8b5cf6;
+            --zai-accent: #10b981;
+            --zai-gold: #f59e0b;
+            --zai-gold-light: #fbbf24;
+            --zai-bg-light: #ffffff;
+            --zai-bg-dark: #0f172a;
+            --zai-text-primary: #1f2937;
+            --zai-text-secondary: #6b7280;
+            --zai-border: #e5e7eb;
+            --zai-shadow: rgba(99, 102, 241, 0.15);
+        }
+
+        /* Section Container */
+        .zai-promo-section {
+            padding: 4rem 1rem;
+            margin: 3rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background Gradient */
+        .zai-promo-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Glass Card */
+        .zai-glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08),
+                        0 2px 8px rgba(0, 0, 0, 0.04),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            padding: 3rem;
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            .zai-glass-card {
+                background: rgba(30, 41, 59, 0.85);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        body.dark-mode .zai-glass-card {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* Badge */
+        .zai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, var(--zai-gold) 0%, var(--zai-gold-light) 100%);
+            border-radius: 100px;
+            color: #ffffff;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            animation: zai-badge-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes zai-badge-pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            }
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+            }
+        }
+
+        .zai-badge-icon {
+            font-size: 1rem;
+            animation: zai-badge-sparkle 1.5s ease-in-out infinite;
+        }
+
+        @keyframes zai-badge-sparkle {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+            }
+            50% {
+                transform: scale(1.2) rotate(10deg);
+            }
+        }
+
+        /* Main Content Layout */
+        .zai-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        @media (max-width: 968px) {
+            .zai-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        /* Left Side */
+        .zai-left {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Heading */
+        .zai-heading {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin: 0;
+            color: var(--zai-text-primary);
+        }
+
+        .zai-gradient-text {
+            background: linear-gradient(135deg, var(--zai-primary) 0%, var(--zai-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .zai-heading {
+                color: #f8fafc;
+            }
+        }
+
+        body.dark-mode .zai-heading {
+            color: #f8fafc;
+        }
+
+        /* Subheading */
+        .zai-subheading {
+            font-size: 1.125rem;
+            color: var(--zai-text-secondary);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Features Grid */
+        .zai-features {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .zai-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .zai-feature:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.2);
+            transform: translateX(4px);
+        }
+
+        .zai-feature-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--zai-primary);
+            flex-shrink: 0;
+        }
+
+        .zai-feature span {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--zai-text-primary);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .zai-feature span {
+                color: #e2e8f0;
+            }
+        }
+
+        body.dark-mode .zai-feature span {
+            color: #e2e8f0;
+        }
+
+        /* Secondary CTA */
+        .zai-secondary-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            color: var(--zai-text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            width: fit-content;
+        }
+
+        .zai-secondary-cta:hover {
+            background: rgba(99, 102, 241, 0.08);
+            color: var(--zai-primary);
+            transform: translateX(4px);
+        }
+
+        .zai-secondary-icon {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* Right Side - Token Wrapper */
+        .zai-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .zai-token-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        /* Glow Effect Behind Token */
+        .zai-token-glow {
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+            filter: blur(40px);
+            animation: zai-glow-pulse 3s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes zai-glow-pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        /* Token Button Container */
+        .zai-token-button {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            text-decoration: none;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .zai-token-button:hover {
+            transform: translateY(-8px);
+        }
+
+        /* Premium Token Design */
+        .zai-token {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #ffffff 0%, #f0f0f0 50%, #e0e0e0 100%);
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.15),
+                0 8px 16px rgba(0, 0, 0, 0.1),
+                inset 0 2px 4px rgba(255, 255, 255, 0.8),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: zai-token-float 4s ease-in-out infinite;
+        }
+
+        @keyframes zai-token-float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .zai-token:hover {
+            transform: scale(1.05);
+            box-shadow:
+                0 25px 50px rgba(99, 102, 241, 0.25),
+                0 12px 24px rgba(0, 0, 0, 0.12),
+                inset 0 2px 4px rgba(255, 255, 255, 0.8),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Token Rings */
+        .zai-token-ring-outer {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            background: linear-gradient(135deg, var(--zai-primary), var(--zai-secondary), var(--zai-accent)) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.8;
+            animation: zai-ring-rotate 8s linear infinite;
+        }
+
+        @keyframes zai-ring-rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .zai-token-ring-middle {
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            border: 2px solid var(--zai-gold);
+            opacity: 0.6;
+            animation: zai-ring-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes zai-ring-pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.02);
+                opacity: 0.8;
+            }
+        }
+
+        .zai-token-ring-inner {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            border-radius: 50%;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        /* Token Face */
+        .zai-token-face {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            overflow: hidden;
+        }
+
+        /* Shimmer Effect */
+        .zai-token-shimmer {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.5) 50%,
+                transparent 70%
+            );
+            animation: zai-shimmer 3s infinite;
+        }
+
+        @keyframes zai-shimmer {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+
+        /* Token Logo */
+        .zai-token-logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--zai-primary) 0%, var(--zai-secondary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .zai-token-logo svg {
+            width: 32px;
+            height: 32px;
+            color: #ffffff;
+            stroke-width: 2.5;
+        }
+
+        /* Token Brand */
+        .zai-token-brand {
+            font-size: 1.75rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--zai-primary) 0%, var(--zai-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Discount Badge */
+        .zai-token-discount {
+            position: absolute;
+            bottom: 20px;
+            background: linear-gradient(135deg, var(--zai-gold) 0%, var(--zai-gold-light) 100%);
+            color: #ffffff;
+            padding: 0.35rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            box-shadow: 0 4px 8px rgba(245, 158, 11, 0.4);
+            animation: zai-discount-bounce 2s ease-in-out infinite;
+            z-index: 2;
+        }
+
+        @keyframes zai-discount-bounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Token CTA */
+        .zai-token-cta {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .zai-cta-primary {
+            display: block;
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--zai-primary) 0%, var(--zai-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.25rem;
+        }
+
+        .zai-cta-secondary {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--zai-text-secondary);
+            font-weight: 500;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .zai-cta-secondary {
+                color: #94a3b8;
+            }
+        }
+
+        body.dark-mode .zai-cta-secondary {
+            color: #94a3b8;
+        }
+
+        /* Floating Particles */
+        .zai-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .zai-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--zai-primary);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: zai-particle-float 4s ease-in-out infinite;
+        }
+
+        .zai-particle-1 {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+            background: var(--zai-primary);
+        }
+
+        .zai-particle-2 {
+            top: 60%;
+            right: 15%;
+            animation-delay: 1s;
+            background: var(--zai-secondary);
+        }
+
+        .zai-particle-3 {
+            bottom: 25%;
+            left: 20%;
+            animation-delay: 2s;
+            background: var(--zai-accent);
+        }
+
+        .zai-particle-4 {
+            top: 40%;
+            right: 25%;
+            animation-delay: 3s;
+            background: var(--zai-gold);
+        }
+
+        @keyframes zai-particle-float {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-20px) scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        /* Trust Badges */
+        .zai-trust {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .zai-trust-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--zai-text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .zai-trust-icon {
+            width: 18px;
+            height: 18px;
+            color: var(--zai-accent);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .zai-glass-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .zai-heading {
+                font-size: 2rem;
+            }
+
+            .zai-subheading {
+                font-size: 1rem;
+            }
+
+            .zai-token {
+                width: 160px;
+                height: 160px;
+            }
+
+            .zai-token-glow {
+                width: 220px;
+                height: 220px;
+            }
+
+            .zai-token-logo {
+                width: 50px;
+                height: 50px;
+            }
+
+            .zai-token-logo svg {
+                width: 26px;
+                height: 26px;
+            }
+
+            .zai-token-brand {
+                font-size: 1.5rem;
+            }
+
+            .zai-cta-primary {
+                font-size: 1.1rem;
+            }
+
+            .zai-trust {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .zai-promo-section {
+                padding: 2rem 1rem;
+            }
+
+            .zai-glass-card {
+                padding: 1.5rem 1rem;
+            }
+
+            .zai-heading {
+                font-size: 1.75rem;
+            }
+
+            .zai-token {
+                width: 140px;
+                height: 140px;
+            }
+
+            .zai-token-glow {
+                width: 180px;
+                height: 180px;
+            }
+        }
+
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+            .zai-badge,
+            .zai-badge-icon,
+            .zai-token,
+            .zai-token-glow,
+            .zai-token-ring-outer,
+            .zai-token-ring-middle,
+            .zai-token-shimmer,
+            .zai-token-discount,
+            .zai-particle {
+                animation: none;
+            }
+
+            .zai-feature:hover,
+            .zai-secondary-cta:hover,
+            .zai-token-button:hover {
+                transform: none;
+            }
+        }
+
+        /* Focus States for Accessibility */
+        .zai-token-button:focus-visible,
+        .zai-secondary-cta:focus-visible {
+            outline: 3px solid var(--zai-primary);
+            outline-offset: 4px;
+            border-radius: 8px;
+        }
+    </style>
+
+    <script>
+        // Dark mode toggle functionality
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const button = document.querySelector('.theme-toggle');
+            if (document.body.classList.contains('dark-mode')) {
+                button.textContent = '☀️ Light Mode';
+            } else {
+                button.textContent = '🌙 Dark Mode';
+            }
+        }
+
+        // Auto-detect system preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.classList.add('dark-mode');
+            const button = document.querySelector('.theme-toggle');
+            if (button) button.textContent = '☀️ Light Mode';
+        }
+    </script>
+</body>
+</html>

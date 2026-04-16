@@ -1,0 +1,122 @@
+# ===========================================
+# Forge .gitignore
+# ===========================================
+
+# -------------------------------------------
+# Sensitive files (API keys, secrets)
+# -------------------------------------------
+.env
+.env.local
+.env.*.local
+*.env
+.claude/.env
+.claude/.env.local
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+*_rsa
+*_rsa.pub
+*.crt
+*.cer
+secrets/
+credentials/
+private/
+
+# -------------------------------------------
+# Machine-specific history and logs
+# -------------------------------------------
+.claude/history/
+.claude/data/
+.claude/Observability/logs/
+.claude/Observability/apps/server/logs/
+
+# -------------------------------------------
+# Claude Code session files (machine-specific)
+# -------------------------------------------
+.claude/debug/
+.claude/file-history/
+.claude/history.jsonl
+.claude/projects/
+.claude/shell-snapshots/
+.claude/statsig/
+.claude/todos/
+.claude/.credentials.json
+.claude/plugins/
+.claude/api-sessions/
+.claude/agent-sessions.json
+.claude/memory/
+
+# -------------------------------------------
+# Local overrides
+# -------------------------------------------
+.local/
+*.local.json
+*.local.md
+.claude/settings.json
+.mcp.json
+.claude/mcp.json
+mcp.json
+
+# -------------------------------------------
+# macOS
+# -------------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# -------------------------------------------
+# Logs
+# -------------------------------------------
+*.log
+*.log.*
+logs/
+
+# -------------------------------------------
+# Node/Bun runtime
+# -------------------------------------------
+node_modules/
+.bun/
+.npm
+.yarn
+.pnp.*
+.pnpm-store/
+
+# -------------------------------------------
+# gstack (cloned separately)
+# -------------------------------------------
+.claude/skills/gstack/
+
+# -------------------------------------------
+# Python
+# -------------------------------------------
+venv/
+__pycache__/
+*.pyc
+
+# -------------------------------------------
+# Runtime/build
+# -------------------------------------------
+dist/
+build/
+out/
+.cache/
+*.cache
+tmp/
+temp/
+*.tmp
+*.bak
+
+# -------------------------------------------
+# IDE
+# -------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

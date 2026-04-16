@@ -1,0 +1,29 @@
+[Unit]
+Description=PAI Email Monitor Service
+Documentation=https://github.com/cgarrison/.pai
+After=network.target
+
+[Service]
+Type=simple
+User=cgarrison
+Group=cgarrison
+WorkingDirectory=/home/cgarrison/.claude/skills/EmailManager
+ExecStart=/home/cgarrison/.bun/bin/bun /home/cgarrison/.claude/skills/EmailManager/tools/EmailMonitor.ts --daemon
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/home/cgarrison/.claude/skills/EmailManager/data/emailmonitor.log
+StandardError=append:/home/cgarrison/.claude/skills/EmailManager/data/emailmonitor.log
+
+# Environment
+Environment=HOME=/home/cgarrison
+Environment=PATH=/home/cgarrison/.bun/bin:/usr/local/bin:/usr/bin:/bin
+
+# Security
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/cgarrison/.claude/skills/EmailManager/data
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

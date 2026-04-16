@@ -1,0 +1,16 @@
+{
+  "name": "emailmanager",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.73.0",
+    "googleapis": "^171.2.0"
+  }
+}

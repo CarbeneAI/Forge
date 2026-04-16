@@ -1,0 +1,53 @@
+# PAI Approval Gates
+# Actions that require human approval before execution
+# Managed by: bun Governance/tools/ApprovalGate.ts
+
+gates:
+  deploy:
+    description: "Deploying to production or public-facing services"
+    requires: telegram_confirm
+    agents:
+      - hiram
+      - joshua
+
+  budget_exceed:
+    description: "Agent spending exceeds 80% of monthly budget"
+    requires: telegram_notify
+    agents: all
+
+  new_agent:
+    description: "Creating or modifying agent configurations"
+    requires: telegram_confirm
+    agents: all
+
+  security_change:
+    description: "Modifying security configs, firewall rules, SSH keys"
+    requires: telegram_confirm
+    agents:
+      - nehemiah
+      - ehud
+      - gideon
+
+  git_push_public:
+    description: "Pushing to any public repository"
+    requires: telegram_confirm
+    agents: all
+
+  destructive_action:
+    description: "rm -rf, DROP TABLE, git reset --hard, etc."
+    requires: telegram_confirm
+    agents: all
+
+  strategy_change:
+    description: "Modifying trading strategies or business strategy"
+    requires: telegram_confirm
+    agents:
+      - joseph
+      - phoebe
+      - aquila
+
+notification:
+  telegram:
+    bot_token_env: TELEGRAM_BOT_TOKEN
+    chat_id_env: TELEGRAM_CHAT_ID
+    timeout_minutes: 30

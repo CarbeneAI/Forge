@@ -1,0 +1,64 @@
+# PAI Agent Budget Configuration
+# Monthly spend limits per agent (in USD)
+# Managed by: bun Governance/tools/BudgetReport.ts --budget
+
+defaults:
+  monthly_limit: 50.00
+  alert_threshold: 0.80
+  notification: telegram
+
+agents:
+  hiram:
+    monthly_limit: 100.00
+    description: "Primary engineer - highest usage expected"
+  solomon:
+    monthly_limit: 75.00
+    description: "Code reviews and mentoring"
+  bezalel:
+    monthly_limit: 75.00
+    description: "Architecture and PRDs"
+  nehemiah:
+    monthly_limit: 50.00
+    description: "Security audits"
+  joshua:
+    monthly_limit: 50.00
+    description: "Project management"
+  luke:
+    monthly_limit: 60.00
+    description: "Research coordination"
+  phoebe:
+    monthly_limit: 40.00
+    description: "Marketing and content"
+  aquila:
+    monthly_limit: 40.00
+    description: "Sales pipeline"
+  lydia:
+    monthly_limit: 30.00
+    description: "Financial advisory"
+  deborah:
+    monthly_limit: 30.00
+    description: "Critical thinking advisory"
+  ehud:
+    monthly_limit: 40.00
+    description: "Penetration testing"
+  daniel:
+    monthly_limit: 30.00
+    description: "Compliance"
+  gideon:
+    monthly_limit: 50.00
+    description: "Incident response - may spike during incidents"
+  ezra:
+    monthly_limit: 40.00
+    description: "QA testing"
+  miriam:
+    monthly_limit: 30.00
+    description: "UI/UX design"
+  joseph:
+    monthly_limit: 20.00
+    description: "Trading automation"
+  philemon:
+    monthly_limit: 15.00
+    description: "Email management"
+  barnabas:
+    monthly_limit: 15.00
+    description: "Discord community"

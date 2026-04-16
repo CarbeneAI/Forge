@@ -1,0 +1,25 @@
+[Unit]
+Description=PAI Telegram Bot - Full PAI access via Telegram
+Documentation=https://github.com/your-repo/PAI
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/home/cgarrison/.bun/bin/bun /home/cgarrison/.claude/skills/TelegramBot/tools/Server.ts
+Restart=always
+RestartSec=10
+
+# Environment
+Environment=PAI_DIR=/home/cgarrison/.claude
+Environment=HOME=/home/cgarrison
+
+# Logging
+StandardOutput=append:/home/cgarrison/.claude/logs/telegram-bot.log
+StandardError=append:/home/cgarrison/.claude/logs/telegram-bot.log
+
+# Working directory
+WorkingDirectory=/home/cgarrison/.claude/skills/TelegramBot/tools
+
+[Install]
+WantedBy=default.target

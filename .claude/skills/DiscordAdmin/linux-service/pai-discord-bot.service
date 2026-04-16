@@ -1,0 +1,25 @@
+[Unit]
+Description=PAI Discord Bot - Private PAI channel access
+Documentation=https://github.com/your-repo/PAI
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/home/cgarrison/.bun/bin/bun /home/cgarrison/.claude/skills/DiscordAdmin/tools/DiscordBot.ts
+Restart=always
+RestartSec=10
+
+# Environment
+Environment=PAI_DIR=/home/cgarrison/.claude
+Environment=HOME=/home/cgarrison
+
+# Logging
+StandardOutput=append:/home/cgarrison/.claude/logs/discord-bot.log
+StandardError=append:/home/cgarrison/.claude/logs/discord-bot.log
+
+# Working directory
+WorkingDirectory=/home/cgarrison/.claude/skills/DiscordAdmin/tools
+
+[Install]
+WantedBy=default.target

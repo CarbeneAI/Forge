@@ -1,0 +1,82 @@
+# PAI Workspace Configuration
+# Isolate agent pools, budgets, and goals by workspace
+# Read by: Governance tools for workspace-scoped reporting
+
+workspaces:
+  carbeneai:
+    name: "CarbeneAI Consulting"
+    description: "AI strategy and security consulting business"
+    goals:
+      - G1
+      - G4
+    agents:
+      - phoebe
+      - aquila
+      - barnabas
+    budget_pool: 200.00
+
+  infrastructure:
+    name: "PAI Infrastructure"
+    description: "Personal AI infrastructure development"
+    goals:
+      - G2
+    agents:
+      - hiram
+      - bezalel
+      - solomon
+      - joshua
+      - ezra
+      - miriam
+      - nehemiah
+      - daniel
+      - gideon
+    budget_pool: 500.00
+
+  trading:
+    name: "Trading Operations"
+    description: "Automated trading pipeline"
+    goals:
+      - G3
+    agents:
+      - joseph
+      - lydia
+    budget_pool: 100.00
+
+  research:
+    name: "Research & Intelligence"
+    description: "Cross-cutting research capability"
+    goals:
+      - G1
+      - G2
+      - G3
+      - G4
+    agents:
+      - luke
+      - deborah
+      - ClaudeResearcher
+      - PerplexityResearcher
+      - GeminiResearcher
+      - GrokResearcher
+    budget_pool: 150.00
+
+  security:
+    name: "Security Operations"
+    description: "Offensive and defensive security"
+    goals:
+      - G2
+    agents:
+      - ehud
+      - nehemiah
+      - gideon
+    budget_pool: 150.00
+
+  operations:
+    name: "Daily Operations"
+    description: "Email, admin, and routine tasks"
+    goals:
+      - G1
+      - G2
+    agents:
+      - philemon
+      - abigail
+    budget_pool: 50.00

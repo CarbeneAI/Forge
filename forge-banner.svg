@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="flame-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f97316;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ef4444;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="text-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#cbd5e1;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow-banner">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="text-shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="400" fill="url(#bg-grad)"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.03">
+    <line x1="0" y1="0" x2="0" y2="400" stroke="white" stroke-width="1"/>
+    <line x1="60" y1="0" x2="60" y2="400" stroke="white" stroke-width="1"/>
+    <line x1="120" y1="0" x2="120" y2="400" stroke="white" stroke-width="1"/>
+    <line x1="180" y1="0" x2="180" y2="400" stroke="white" stroke-width="1"/>
+    <line x1="240" y1="0" x2="240" y2="400" stroke="white" stroke-width="1"/>
+    <line x1="300" y1="0" x2="300" y2="400" stroke="white" stroke-width="1"/>
+    <line x1="360" y1="0" x2="360" y2="400" stroke="white" stroke-width="1"/>
+    <line x1="420" y1="0" x2="420" y2="400" stroke="white" stroke-width="1"/>
+    <line x1="0" y1="60" x2="1200" y2="60" stroke="white" stroke-width="1"/>
+    <line x1="0" y1="120" x2="1200" y2="120" stroke="white" stroke-width="1"/>
+    <line x1="0" y1="180" x2="1200" y2="180" stroke="white" stroke-width="1"/>
+    <line x1="0" y1="240" x2="1200" y2="240" stroke="white" stroke-width="1"/>
+    <line x1="0" y1="300" x2="1200" y2="300" stroke="white" stroke-width="1"/>
+    <line x1="0" y1="360" x2="1200" y2="360" stroke="white" stroke-width="1"/>
+  </g>
+
+  <!-- Icon group (left side) -->
+  <g transform="translate(100, 60) scale(0.55)">
+    <!-- Anvil base -->
+    <path d="M 128 340 L 384 340 L 400 380 L 112 380 Z" fill="#374151" rx="4"/>
+    <path d="M 144 300 L 368 300 L 384 340 L 128 340 Z" fill="#4b5563" rx="2"/>
+    <path d="M 144 300 Q 100 300 80 310 Q 70 316 80 320 L 144 320 Z" fill="#4b5563"/>
+    <rect x="148" y="296" width="216" height="4" rx="2" fill="#6b7280" opacity="0.5"/>
+
+    <!-- Hammer -->
+    <g transform="rotate(-35, 280, 200)">
+      <rect x="270" y="180" width="12" height="140" rx="4" fill="#92400e"/>
+      <rect x="272" y="180" width="4" height="140" rx="2" fill="#a16207" opacity="0.4"/>
+      <rect x="248" y="155" width="56" height="32" rx="4" fill="#6b7280"/>
+      <rect x="248" y="155" width="56" height="4" rx="2" fill="#9ca3af" opacity="0.5"/>
+    </g>
+
+    <!-- Flames -->
+    <g filter="url(#glow-banner)">
+      <path d="M 230 280 Q 220 240 240 200 Q 250 170 256 140 Q 262 170 272 200 Q 292 240 282 280 Z" fill="url(#flame-grad)" opacity="0.9"/>
+      <path d="M 240 280 Q 235 250 248 220 Q 254 200 256 180 Q 258 200 264 220 Q 277 250 272 280 Z" fill="#fbbf24" opacity="0.8"/>
+      <path d="M 248 280 Q 246 260 252 240 Q 255 230 256 220 Q 257 230 260 240 Q 266 260 264 280 Z" fill="#fef3c7" opacity="0.9"/>
+    </g>
+
+    <!-- Sparks -->
+    <circle cx="200" cy="200" r="3" fill="#f97316" opacity="0.8"/>
+    <circle cx="310" cy="190" r="2.5" fill="#fbbf24" opacity="0.7"/>
+    <circle cx="190" cy="230" r="2" fill="#ef4444" opacity="0.6"/>
+    <circle cx="320" cy="220" r="2" fill="#f97316" opacity="0.7"/>
+    <circle cx="210" cy="170" r="1.5" fill="#fbbf24" opacity="0.5"/>
+    <circle cx="300" cy="165" r="2" fill="#ef4444" opacity="0.6"/>
+  </g>
+
+  <!-- Main title -->
+  <text x="460" y="195" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="120" fill="url(#text-grad)" filter="url(#text-shadow)" letter-spacing="8">FORGE</text>
+
+  <!-- Tagline -->
+  <text x="464" y="245" font-family="system-ui, -apple-system, sans-serif" font-weight="400" font-size="24" fill="#94a3b8" letter-spacing="6">AI OPERATIONS PLATFORM</text>
+
+  <!-- Divider line -->
+  <line x1="464" y1="265" x2="700" y2="265" stroke="url(#flame-grad)" stroke-width="2" opacity="0.4"/>
+
+  <!-- Description -->
+  <text x="464" y="300" font-family="system-ui, -apple-system, sans-serif" font-weight="300" font-size="18" fill="#64748b">Open-source scaffolding for Claude Code</text>
+  <text x="464" y="328" font-family="system-ui, -apple-system, sans-serif" font-weight="300" font-size="18" fill="#64748b">100+ skills  |  20+ agents  |  event-driven automation</text>
+
+  <!-- CarbeneAI badge -->
+  <g transform="translate(464, 350)">
+    <rect width="160" height="30" rx="15" fill="none" stroke="#475569" stroke-width="1"/>
+    <text x="80" y="20" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="500" font-size="12" fill="#94a3b8" letter-spacing="2">BY CARBENEAI</text>
+  </g>
+</svg>

@@ -1,0 +1,60 @@
+# PAI Standing Orders
+# Recurring agent tasks executed on schedules
+# These integrate with Claude Code's /schedule skill for actual cron execution
+
+orders:
+  daily-security-check:
+    agent: nehemiah
+    schedule: "0 8 * * *"  # 8 AM daily
+    description: "Review overnight Wazuh alerts and security events"
+    goal: G2  # Links to goal hierarchy
+    prompt: "Check Wazuh dashboard for critical alerts from the last 24 hours. Summarize findings and send to Telegram."
+    enabled: true
+
+  weekly-budget-review:
+    agent: lydia
+    schedule: "0 9 * * 1"  # Monday 9 AM
+    description: "Review agent spending against budgets"
+    goal: G2
+    prompt: "Run BudgetReport.ts --budget and analyze spending trends. Flag any agents approaching limits."
+    enabled: true
+
+  daily-trading-scan:
+    agent: joseph
+    schedule: "0 9 * * 1-5"  # Weekdays 9 AM
+    description: "Morning market scan and trade execution"
+    goal: G3
+    prompt: "Run MultiScan.ts for market opportunities, then AutoExecute.ts if recommendations found."
+    enabled: true
+
+  weekly-content-review:
+    agent: phoebe
+    schedule: "0 10 * * 1"  # Monday 10 AM
+    description: "Plan weekly content calendar"
+    goal: G4
+    prompt: "Review content pipeline, draft LinkedIn posts for the week, check blog post drafts."
+    enabled: false  # Enable when content pipeline is ready
+
+  daily-email-check:
+    agent: philemon
+    schedule: "0 7 * * *"  # 7 AM daily
+    description: "Morning email triage"
+    goal: G1
+    prompt: "Check Gmail for important client emails, categorize, send Telegram summary of action items."
+    enabled: true
+
+  friday-retro:
+    agent: solomon
+    schedule: "0 16 * * 5"  # Friday 4 PM
+    description: "Weekly engineering retrospective"
+    goal: G2
+    prompt: "Run /retro skill for weekly engineering analysis. Capture learnings."
+    enabled: true
+
+  sunday-pipeline-review:
+    agent: aquila
+    schedule: "0 18 * * 0"  # Sunday 6 PM
+    description: "Weekly sales pipeline review"
+    goal: G1
+    prompt: "Review CRM pipeline, update lead statuses, prepare Monday outreach list."
+    enabled: false  # Enable when CRM is active

@@ -1,0 +1,144 @@
+#!/usr/bin/env bash
+# ============================================================================
+# pai - PAI Command Line Interface
+# ============================================================================
+# Usage: pai <command> [args...]
+#
+# A unified CLI for PAI (Personal AI Infrastructure).
+# Routes subcommands to TypeScript tools in CORE/tools/.
+#
+# Install: ln -sf ~/.claude/skills/CORE/tools/pai ~/.local/bin/pai
+# ============================================================================
+
+set -euo pipefail
+
+SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
+TOOLS_DIR="$(dirname "$SCRIPT_PATH")"
+
+# Colors
+RED='\033[31m'
+GREEN='\033[32m'
+YELLOW='\033[33m'
+CYAN='\033[36m'
+BOLD='\033[1m'
+DIM='\033[2m'
+RESET='\033[0m'
+
+# ─── Command Routing ────────────────────────────────────────────────────────
+
+COMMAND="${1:-help}"
+shift 2>/dev/null || true
+
+case "$COMMAND" in
+  status)
+    exec bun "$TOOLS_DIR/Status.ts" "$@"
+    ;;
+  doctor|doc)
+    exec bun "$TOOLS_DIR/Doctor.ts" "$@"
+    ;;
+  audit|security)
+    exec bun "$TOOLS_DIR/SecurityAudit.ts" "$@"
+    ;;
+  cron|jobs)
+    exec bun "$TOOLS_DIR/Cron.ts" "$@"
+    ;;
+  search|memory|recall)
+    exec bun "$TOOLS_DIR/MemorySearch.ts" "$@"
+    ;;
+  nodes|hosts)
+    exec bun "$TOOLS_DIR/Nodes.ts" "$@"
+    ;;
+  discord)
+    exec bash "$TOOLS_DIR/../../DiscordAdmin/tools/Manage.sh" "$@"
+    ;;
+  telegram)
+    exec bash "$TOOLS_DIR/../../TelegramBot/tools/Manage.sh" "$@"
+    ;;
+  test)
+    exec bun "${TOOLS_DIR}/../../../hooks/self-test.ts" "$@"
+    ;;
+  skills)
+    echo -e "${BOLD}PAI Skills${RESET}"
+    echo "=========="
+    ls -1 "${TOOLS_DIR}/../../../skills/" | sort
+    echo ""
+    COUNT=$(ls -1 "${TOOLS_DIR}/../../../skills/" | wc -l)
+    echo -e "${DIM}${COUNT} skills total${RESET}"
+    ;;
+  agents)
+    echo -e "${BOLD}PAI Agents${RESET}"
+    echo "=========="
+    ls -1 "${TOOLS_DIR}/../../../agents/" | sed 's/\.md$//' | sort
+    echo ""
+    COUNT=$(ls -1 "${TOOLS_DIR}/../../../agents/" | wc -l)
+    echo -e "${DIM}${COUNT} agents total${RESET}"
+    ;;
+  version|--version|-v)
+    # TOOLS_DIR is skills/CORE/tools, go up 4 levels to REPO_ROOT
+    REPO_ROOT="$(cd "$TOOLS_DIR/../../../.." && pwd)"
+    HASH=$(git -C "$REPO_ROOT" rev-parse --short HEAD 2>/dev/null || echo "unknown")
+    DATE=$(git -C "$REPO_ROOT" log -1 --format=%ci 2>/dev/null | cut -d' ' -f1 || echo "unknown")
+    echo "PAI ${HASH} (${DATE})"
+    ;;
+  help|--help|-h)
+    cat <<EOF
+${BOLD}PAI - Personal AI Infrastructure CLI${RESET}
+
+${BOLD}Usage:${RESET} pai <command> [options]
+
+${BOLD}CLI Commands:${RESET}
+  ${GREEN}status${RESET}              System overview (services, nodes, disk, activity)
+  ${GREEN}status --telegram${RESET}   Send status to Telegram
+  ${GREEN}doctor${RESET}              Health check with auto-fix (--fix, --deep)
+  ${GREEN}audit${RESET}               Security audit (--deep, --fix, --json)
+  ${GREEN}cron list${RESET}           Cron jobs across all hosts
+  ${GREEN}cron add${RESET}            Add a cron job (--host, --schedule, --command, --label)
+  ${GREEN}cron rm${RESET}             Remove a cron job (--host, --label or --id)
+  ${GREEN}search "query"${RESET}      Semantic memory search (--source, --limit)
+  ${GREEN}nodes status${RESET}        Ping all homelab hosts
+  ${GREEN}nodes health${RESET}        Detailed health (uptime, disk, docker)
+  ${GREEN}nodes exec HOST CMD${RESET} Run command on remote host
+  ${GREEN}discord${RESET}             Discord bot management (start|stop|restart|status|logs)
+  ${GREEN}telegram${RESET}            Telegram bot management (start|stop|restart|status|logs)
+  ${GREEN}skills${RESET}              List all skills
+  ${GREEN}agents${RESET}              List all agents
+  ${GREEN}test${RESET}                Run PAI self-test
+  ${GREEN}version${RESET}             Show PAI version
+
+${BOLD}Shell Aliases:${RESET} ${DIM}(sourced from pai-aliases.sh)${RESET}
+  ${CYAN}Navigation:${RESET}
+    pai / paic / pais / paia / paih  Go to PAI directories
+  ${CYAN}Git:${RESET}
+    pai-pull / pai-push / pai-sync   Git sync operations
+    pai-status / pai-diff / pai-log  Git info
+    pai-commit "msg"                 Push with custom message
+  ${CYAN}Editing:${RESET}
+    pai-edit <file>                  Edit file and push
+    pai-edit-skill / pai-edit-agent  Edit skills or agents
+  ${CYAN}Utilities:${RESET}
+    pai-new-skill <name>             Create skill from template
+    pai-check                        Check PAI configuration
+    pai-search "query"               Semantic memory search
+
+${BOLD}Options:${RESET}
+  ${DIM}--json${RESET}              JSON output (most commands)
+  ${DIM}--fix${RESET}               Auto-fix issues (doctor, audit)
+  ${DIM}--deep${RESET}              Include remote/live checks (doctor, audit)
+  ${DIM}--telegram${RESET}          Send to Telegram (status)
+
+${BOLD}Examples:${RESET}
+  pai status                    # Quick system overview
+  pai doctor --fix              # Fix health issues
+  pai audit --deep              # Deep security scan
+  pai search "trading setup"    # Search PAI memory
+  pai nodes health --host ubuntu  # Check Ubuntu server health
+  pai cron list                 # Show all scheduled jobs
+EOF
+    ;;
+  *)
+    echo -e "${RED}Unknown command: ${COMMAND}${RESET}"
+    echo ""
+    echo "Run 'pai help' for available commands."
+    exit 1
+    ;;
+esac

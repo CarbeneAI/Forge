@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+body {
+  @apply bg-bg-primary text-text-primary font-sans antialiased;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  @apply w-2 h-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-border-primary rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-border-secondary;
+}
+
+/* Button styles */
+.btn {
+  @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-accent-blue/50;
+}
+
+.btn-primary {
+  @apply bg-accent-blue text-bg-primary hover:bg-accent-blue/90;
+}
+
+.btn-ghost {
+  @apply bg-transparent text-text-secondary hover:text-text-primary hover:bg-bg-tertiary/50;
+}
+
+/* Card styles */
+.card {
+  @apply bg-bg-secondary border border-border-primary rounded-lg p-4;
+  @apply transition-all duration-200;
+}
+
+.card:hover {
+  @apply border-border-secondary;
+}
+
+/* Status badge styles */
+.badge {
+  @apply px-2 py-0.5 text-xs font-medium rounded-full;
+}
+
+.badge-success {
+  @apply bg-status-success/20 text-status-success;
+}
+
+.badge-error {
+  @apply bg-status-error/20 text-status-error;
+}
+
+.badge-waiting {
+  @apply bg-status-waiting/20 text-status-waiting;
+}
+
+.badge-canceled {
+  @apply bg-status-canceled/20 text-status-canceled;
+}
+
+.badge-active {
+  @apply bg-status-active/20 text-status-active;
+}
+
+.badge-inactive {
+  @apply bg-status-inactive/20 text-status-inactive;
+}
+
+/* Stat card */
+.stat-card {
+  @apply bg-bg-secondary border border-border-primary rounded-lg p-4;
+  @apply flex flex-col items-center justify-center text-center;
+}
+
+.stat-value {
+  @apply text-3xl font-bold text-accent-blue;
+}
+
+.stat-label {
+  @apply text-sm text-text-tertiary mt-1;
+}
+
+/* Table styles */
+.table {
+  @apply w-full text-sm;
+}
+
+.table th {
+  @apply text-left text-text-tertiary font-medium py-2 px-3 border-b border-border-primary;
+}
+
+.table td {
+  @apply py-3 px-3 border-b border-border-primary/50;
+}
+
+.table tr:hover {
+  @apply bg-bg-tertiary/30;
+}
+
+/* Loading animation */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Spinning animation */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}

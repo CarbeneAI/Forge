@@ -1,0 +1,346 @@
+{
+  "name": "Call Intelligence Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "call-intelligence",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": false
+        }
+      },
+      "id": "webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [260, 300],
+      "webhookId": "call-intelligence"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2048, system: `# IDENTITY\\n\\nYou are an expert business intelligence analyst specializing in extracting actionable insights from sales and customer success call transcripts.\\n\\n# GOAL\\n\\nExtract structured intelligence from call transcripts that can be tracked over time.\\n\\n# OUTPUT FORMAT\\n\\nOutput ONLY valid JSON with no additional text.\\n\\nFor SALES calls:\\n{\\n  \"call_type\": \"sales\",\\n  \"summary\": \"2-3 sentence summary\",\\n  \"competitors\": [\"list\"],\\n  \"objections\": [\"list\"],\\n  \"feature_requests\": [\"list\"],\\n  \"deal_probability\": 0-100,\\n  \"next_steps\": [\"list\"]\\n}\\n\\nFor CUSTOMER_SUCCESS calls:\\n{\\n  \"call_type\": \"customer_success\",\\n  \"summary\": \"2-3 sentence summary\",\\n  \"feature_requests\": [\"list\"],\\n  \"recurring_issues\": [\"list\"],\\n  \"expansion_signals\": [\"list\"],\\n  \"sentiment\": 1-10,\\n  \"follow_up_required\": [\"list\"]\\n}\\n\\nUse empty arrays [] for fields with no items.`, messages: [{ role: 'user', content: `Call Type: ${$json.body.call_type.toUpperCase()}\\nClient: ${$json.body.client}\\n\\nTRANSCRIPT:\\n${$json.body.transcript}` }] }) }}",
+        "options": {}
+      },
+      "id": "anthropic",
+      "name": "Analyze with Claude",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [480, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ANTHROPIC_CREDENTIAL_ID",
+          "name": "Anthropic API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Claude response and extract JSON\nconst response = $input.first().json;\nconst content = response.content[0].text;\n\n// Handle potential markdown code blocks\nlet jsonStr = content;\nconst jsonMatch = content.match(/```(?:json)?\\s*([\\s\\S]*?)```/);\nif (jsonMatch) {\n  jsonStr = jsonMatch[1];\n}\n\nconst analysis = JSON.parse(jsonStr.trim());\n\n// Add metadata from original request\nconst originalRequest = $('Webhook').first().json.body;\nanalysis.client = originalRequest.client;\nanalysis.date = new Date().toISOString().split('T')[0];\n\n// Format arrays as comma-separated strings for Sheets\nif (analysis.competitors) analysis.competitors_str = analysis.competitors.join(', ');\nif (analysis.objections) analysis.objections_str = analysis.objections.join(', ');\nif (analysis.feature_requests) analysis.feature_requests_str = analysis.feature_requests.join(', ');\nif (analysis.next_steps) analysis.next_steps_str = analysis.next_steps.join(', ');\nif (analysis.recurring_issues) analysis.recurring_issues_str = analysis.recurring_issues.join(', ');\nif (analysis.expansion_signals) analysis.expansion_signals_str = analysis.expansion_signals.join(', ');\nif (analysis.follow_up_required) analysis.follow_up_required_str = analysis.follow_up_required.join(', ');\n\nreturn [{ json: analysis }];"
+      },
+      "id": "parse",
+      "name": "Parse Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "sales-check",
+              "leftValue": "={{ $json.call_type }}",
+              "rightValue": "sales",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "switch",
+      "name": "Sales or CS?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [920, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1hefl53IFoQlM-5hFzAK7ucQEX7YS7aKDSa9h7cFC0XU",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sales Calls",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.date }}",
+            "Client": "={{ $json.client }}",
+            "Summary": "={{ $json.summary }}",
+            "Competitors": "={{ $json.competitors_str }}",
+            "Objections": "={{ $json.objections_str }}",
+            "Feature Requests": "={{ $json.feature_requests_str }}",
+            "Deal Probability": "={{ $json.deal_probability }}",
+            "Next Steps": "={{ $json.next_steps_str }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "sheets-sales",
+      "name": "Append to Sales Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1140, 200],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_SHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1hefl53IFoQlM-5hFzAK7ucQEX7YS7aKDSa9h7cFC0XU",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Customer Success Calls",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.date }}",
+            "Client": "={{ $json.client }}",
+            "Summary": "={{ $json.summary }}",
+            "Feature Requests": "={{ $json.feature_requests_str }}",
+            "Recurring Issues": "={{ $json.recurring_issues_str }}",
+            "Expansion Signals": "={{ $json.expansion_signals_str }}",
+            "Sentiment": "={{ $json.sentiment }}",
+            "Follow-up": "={{ $json.follow_up_required_str }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "sheets-cs",
+      "name": "Append to CS Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1140, 400],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_SHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ content: `📞 **New ${$json.call_type === 'sales' ? 'Sales' : 'Customer Success'} Call Analyzed**\\n\\n**Client:** ${$json.client}\\n**Summary:** ${$json.summary}\\n${$json.deal_probability ? `**Deal Probability:** ${$json.deal_probability}%` : `**Sentiment:** ${$json.sentiment}/10`}\\n${$json.competitors?.length ? `**Competitors:** ${$json.competitors.join(', ')}` : ''}${$json.expansion_signals?.length ? `**Expansion Signals:** ${$json.expansion_signals.join(', ')}` : ''}` }) }}",
+        "options": {}
+      },
+      "id": "discord-sales",
+      "name": "Discord Notify (Sales)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1360, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ content: `📞 **New Customer Success Call Analyzed**\\n\\n**Client:** ${$json.client}\\n**Summary:** ${$json.summary}\\n**Sentiment:** ${$json.sentiment}/10\\n${$json.expansion_signals?.length ? `**Expansion Signals:** ${$json.expansion_signals.join(', ')}` : ''}${$json.recurring_issues?.length ? `**Recurring Issues:** ${$json.recurring_issues.join(', ')}` : ''}` }) }}",
+        "options": {}
+      },
+      "id": "discord-cs",
+      "name": "Discord Notify (CS)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1360, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, message: 'Call analyzed and recorded', analysis: $json }) }}",
+        "options": {}
+      },
+      "id": "response-sales",
+      "name": "Response (Sales)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1580, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, message: 'Call analyzed and recorded', analysis: $json }) }}",
+        "options": {}
+      },
+      "id": "response-cs",
+      "name": "Response (CS)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1580, 400]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Analyze with Claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze with Claude": {
+      "main": [
+        [
+          {
+            "node": "Parse Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Response": {
+      "main": [
+        [
+          {
+            "node": "Sales or CS?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sales or CS?": {
+      "main": [
+        [
+          {
+            "node": "Append to Sales Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append to CS Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append to Sales Sheet": {
+      "main": [
+        [
+          {
+            "node": "Discord Notify (Sales)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append to CS Sheet": {
+      "main": [
+        [
+          {
+            "node": "Discord Notify (CS)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord Notify (Sales)": {
+      "main": [
+        [
+          {
+            "node": "Response (Sales)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord Notify (CS)": {
+      "main": [
+        [
+          {
+            "node": "Response (CS)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "PAI",
+      "createdAt": "2026-02-05T00:00:00.000Z",
+      "updatedAt": "2026-02-05T00:00:00.000Z"
+    },
+    {
+      "name": "CallIntelligence",
+      "createdAt": "2026-02-05T00:00:00.000Z",
+      "updatedAt": "2026-02-05T00:00:00.000Z"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2026-02-05T00:00:00.000Z",
+  "versionId": "1"
+}

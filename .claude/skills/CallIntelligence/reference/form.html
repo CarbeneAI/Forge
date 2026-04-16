@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Call Intelligence - Submit Transcript</title>
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: #1a1a24;
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --accent-cyan: #00d4ff;
+      --accent-purple: #8b5cf6;
+      --border-color: #2a2a3a;
+      --success: #22c55e;
+      --error: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: var(--accent-cyan);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent-cyan);
+    }
+
+    textarea {
+      min-height: 300px;
+      resize: vertical;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    button {
+      flex: 1;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent-cyan);
+    }
+
+    .result {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .result.success {
+      display: block;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid var(--success);
+    }
+
+    .result.error {
+      display: block;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--error);
+    }
+
+    .result h3 {
+      margin-bottom: 1rem;
+    }
+
+    .result.success h3 {
+      color: var(--success);
+    }
+
+    .result.error h3 {
+      color: var(--error);
+    }
+
+    .analysis {
+      background: var(--bg-secondary);
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border-color);
+      border-top-color: var(--accent-cyan);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Call Intelligence</h1>
+      <p class="subtitle">Extract insights from sales and customer success calls</p>
+    </header>
+
+    <div class="card">
+      <form id="callForm">
+        <div class="form-group">
+          <label for="client">Client / Company Name</label>
+          <input type="text" id="client" name="client" placeholder="Acme Corp" required>
+        </div>
+
+        <div class="form-group">
+          <label for="callType">Call Type</label>
+          <select id="callType" name="call_type" required>
+            <option value="sales">Sales Call</option>
+            <option value="customer_success">Customer Success Call</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="transcript">Transcript</label>
+          <textarea id="transcript" name="transcript" placeholder="Paste your call transcript here..." required></textarea>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn-secondary" onclick="clearForm()">Clear</button>
+          <button type="submit" class="btn-primary" id="submitBtn">
+            <span class="btn-text">Analyze Call</span>
+          </button>
+        </div>
+      </form>
+
+      <div id="result" class="result"></div>
+    </div>
+
+    <footer>
+      <p>Powered by <a href="https://portal.home.carbeneai.com">PAI</a> &bull; CarbeneAI</p>
+    </footer>
+  </div>
+
+  <script>
+    // UPDATE THIS to your n8n webhook URL
+    const WEBHOOK_URL = 'https://n8n.home.carbeneai.com/webhook/call-intelligence';
+
+    const form = document.getElementById('callForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const resultDiv = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = {
+        client: document.getElementById('client').value,
+        call_type: document.getElementById('callType').value,
+        transcript: document.getElementById('transcript').value
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="loading"><span class="spinner"></span> Analyzing...</span>';
+      resultDiv.className = 'result';
+      resultDiv.style.display = 'none';
+
+      try {
+        const response = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          resultDiv.className = 'result success';
+          resultDiv.innerHTML = `
+            <h3>Analysis Complete</h3>
+            <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+              ${data.message} - saved to Google Sheet and posted to Discord.
+            </p>
+            <div class="analysis">${JSON.stringify(data.analysis, null, 2)}</div>
+          `;
+        } else {
+          throw new Error(data.message || 'Analysis failed');
+        }
+      } catch (error) {
+        resultDiv.className = 'result error';
+        resultDiv.innerHTML = `
+          <h3>Error</h3>
+          <p>${error.message}</p>
+        `;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span class="btn-text">Analyze Call</span>';
+      }
+    });
+
+    function clearForm() {
+      form.reset();
+      resultDiv.className = 'result';
+      resultDiv.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
