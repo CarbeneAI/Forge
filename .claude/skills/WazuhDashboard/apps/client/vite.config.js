@@ -8,8 +8,8 @@ export default defineConfig({
         host: true,
         allowedHosts: [
             'localhost',
-            '192.168.2.81',
-            'wazuh-dashboard.home.carbeneai.com',
+            'localhost',
+            'wazuh-dashboard.home.yourdomain.com',
         ],
     },
 });

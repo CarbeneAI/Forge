@@ -21,7 +21,7 @@ function getApiUrl(): string {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:4001';
   }
-  return 'https://wazuh-dashboard-api.home.carbeneai.com';
+  return 'https://wazuh-dashboard-api.home.yourdomain.com';
 }
 const API_URL = getApiUrl();
 

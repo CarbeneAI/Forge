@@ -15,8 +15,8 @@ import {
 import type { DashboardData, Execution } from './types';
 
 // Use external API URL if accessed via external hostname, otherwise localhost
-const API_URL = window.location.hostname === 'n8n-dashboard.home.carbeneai.com'
-  ? 'https://n8n-dashboard-api.home.carbeneai.com'
+const API_URL = window.location.hostname === 'n8n-dashboard.home.yourdomain.com'
+  ? 'https://n8n-dashboard-api.home.yourdomain.com'
   : 'http://localhost:4002';
 const REFRESH_INTERVAL = 30000; // 30 seconds
 

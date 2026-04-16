@@ -118,11 +118,11 @@ import AgentSwimLaneContainer from './components/AgentSwimLaneContainer.vue';
 // WebSocket connection - detect if running locally or via Traefik
 const getWebSocketUrl = () => {
   const hostname = window.location.hostname;
-  if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '192.168.2.81') {
+  if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'localhost') {
     return 'ws://localhost:4000/stream';
   }
   // Remote access via Traefik - use secure WebSocket
-  return 'wss://observability-api.home.carbeneai.com/stream';
+  return 'wss://observability-api.home.yourdomain.com/stream';
 };
 const { events, isConnected, error, clearEvents } = useWebSocket(getWebSocketUrl());
 
