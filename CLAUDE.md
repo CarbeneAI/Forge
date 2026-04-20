@@ -28,7 +28,7 @@ This file provides guidance to Claude Code when working in this repository.
 │   │   ├── capture-tool-output.ts
 │   │   ├── stop-hook.ts
 │   │   └── lib/pai-paths.ts   # Centralized path resolution
-│   ├── skills/                # ~100 domain-specific capabilities
+│   ├── skills/                # ~125 domain-specific capabilities
 │   │   ├── CORE/              # Identity, architecture, principles
 │   │   ├── Fabric/            # 248 native AI patterns
 │   │   ├── Research/          # Multi-source research workflows
@@ -91,7 +91,7 @@ skills/SkillName/
 | Category | Skills |
 |----------|--------|
 | **Core** | CORE, Fabric (248 patterns), Research, Observability |
-| **Security** | OSINT, RedTeam, pentest-workflow, Ffuf, WazuhDashboard, CSO |
+| **Security** | OSINT, RedTeam, pentest-workflow, Ffuf, WazuhDashboard, CSO, CybersecurityPlaybooks (24 ATT&CK playbooks) |
 | **Development** | DevTeam, CodingAgent, CreateCLI, test-driven-development |
 | **Business** | ceo-advisor, cto-advisor, cfo-advisor, pricing, mvp, validate-idea |
 | **Privacy** | Private (local Ollama routing), OllamaResearcher |

@@ -38,7 +38,7 @@ You <-> Claude Code <-> Forge Configuration <-> Claude AI
 
 | Component | What It Does |
 |-----------|-------------|
-| **Skills** | Self-contained AI capabilities with automatic trigger routing (~100 included) |
+| **Skills** | Self-contained AI capabilities with automatic trigger routing (~125 included) |
 | **Agents** | Specialized AI personalities — architect, engineer, security auditor, researcher |
 | **Hooks** | Event-driven TypeScript automation (session start/end, tool use, context compression) |
 | **History** | Automatic documentation system that captures sessions, learnings, and research |
@@ -57,7 +57,7 @@ Forge remembers your projects, preferences, decisions, and context between conve
 
 Launch research across 5+ AI models simultaneously — Claude, Gemini, Perplexity, Grok, and local Ollama. Each brings different strengths. Results are synthesized into a single, comprehensive analysis. One prompt, five perspectives.
 
-### 100+ Skills with Auto-Activation
+### 125+ Skills with Auto-Activation
 
 Say "research VitePress alternatives" and the Research skill activates automatically. Say "create a CLI tool" and CreateCLI takes over. No slash commands to memorize — skills route based on natural language triggers. Categories span security, development, business advisory, document processing, QA, and more.
 
@@ -93,7 +93,7 @@ Every code change passes through **Nehemiah** (security auditor agent) before it
 
 ### Offensive Security Testing
 
-**Ehud** (penetration tester) runs authorized security assessments against your applications. Combined with the **OSINT**, **RedTeam**, and **pentest-workflow** skills, Forge provides offensive security capabilities typically reserved for dedicated security teams.
+**Ehud** (penetration tester) runs authorized security assessments against your applications. Combined with the **OSINT**, **RedTeam**, **pentest-workflow**, and **CybersecurityPlaybooks** skills (24 ATT&CK-mapped offensive playbooks covering Kerberoasting, BloodHound, Sliver C2, AD Certificate abuse, Zerologon, DCSync, and more), Forge provides offensive security capabilities typically reserved for dedicated security teams.
 
 ### Incident Response
 
@@ -118,6 +118,7 @@ Critical configuration files are tracked in `.pai-protected.json` with automated
 | **WazuhDashboard** | Real-time SIEM monitoring and alert triage |
 | **CSO** | Chief Security Officer strategic review |
 | **cso** | Security posture assessment |
+| **CybersecurityPlaybooks** | 24 ATT&CK-mapped offensive security playbooks — Kerberoasting, BloodHound, Sliver C2, Zerologon, DCSync, sqlmap, Nmap, Metasploit, and more |
 
 ### Security Agent Roster
 
@@ -239,13 +240,13 @@ forge-help    # See all commands
 
 Skills are self-contained AI capability packages that activate automatically based on trigger words in your requests. Each skill contains routing logic, workflows, reference docs, and CLI tools.
 
-### Included Skills (~100)
+### Included Skills (~125)
 
 | Category | Skills |
 |----------|--------|
 | **Core** | CORE (identity/config), Fabric (248 AI patterns), Research (multi-source), Observability (real-time dashboard) |
 | **Privacy** | Private (route to local Ollama/Gemma4), OllamaResearcher (local AI research) |
-| **Security** | OSINT, RedTeam, pentest-workflow, Ffuf, WazuhDashboard, CSO |
+| **Security** | OSINT, RedTeam, pentest-workflow, Ffuf, WazuhDashboard, CSO, CybersecurityPlaybooks (24 ATT&CK-mapped offensive playbooks) |
 | **Development** | DevTeam (multi-agent dev), CodingAgent, CreateCLI, test-driven-development |
 | **Web** | BrightData (4-tier scraping), browse (headless Playwright), connect-chrome |
 | **Business** | ceo-advisor, cto-advisor, cfo-advisor, AlexHormoziPitch, pricing, mvp, validate-idea |
@@ -363,7 +364,7 @@ Full philosophy: [`.claude/skills/CORE/CONSTITUTION.md`](.claude/skills/CORE/CON
 │   │   ├── capture-tool-output.ts
 │   │   ├── stop-hook.ts
 │   │   └── lib/pai-paths.ts   # Centralized path resolution
-│   ├── skills/                # ~100 domain-specific capabilities
+│   ├── skills/                # ~125 domain-specific capabilities
 │   │   ├── CORE/              # Identity, architecture, principles
 │   │   ├── Fabric/            # 248 native AI patterns
 │   │   ├── Research/          # Multi-source research workflows
@@ -551,7 +552,7 @@ If you haven't read Dan's [**The Real Internet of Things**](https://danielmiessl
 Dan is also the creator of [**Fabric**](https://github.com/danielmiessler/fabric) — the AI pattern framework with 248+ patterns that ships natively inside Forge. His work on making AI practical and accessible has shaped how thousands of people think about personal AI systems.
 
 **What Forge adds on top of PAI:**
-- 100+ skills (up from ~10), 20+ specialized agents with distinct personalities
+- 100+ skills (up from ~10) including 24 ATT&CK-mapped offensive security playbooks, 20+ specialized agents with distinct personalities
 - Security-first development with mandatory audit gates (OWASP, SAST)
 - Real-time observability dashboard with WebSocket streaming
 - Privacy routing to local models (Ollama/Gemma4) for sensitive data
