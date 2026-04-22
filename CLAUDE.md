@@ -28,7 +28,7 @@ This file provides guidance to Claude Code when working in this repository.
 │   │   ├── capture-tool-output.ts
 │   │   ├── stop-hook.ts
 │   │   └── lib/pai-paths.ts   # Centralized path resolution
-│   ├── skills/                # ~125 domain-specific capabilities
+│   ├── skills/                # 120 domain-specific capabilities
 │   │   ├── CORE/              # Identity, architecture, principles
 │   │   ├── Fabric/            # 248 native AI patterns
 │   │   ├── Research/          # Multi-source research workflows

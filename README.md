@@ -38,7 +38,7 @@ You <-> Claude Code <-> Forge Configuration <-> Claude AI
 
 | Component | What It Does |
 |-----------|-------------|
-| **Skills** | Self-contained AI capabilities with automatic trigger routing (~125 included) |
+| **Skills** | Self-contained AI capabilities with automatic trigger routing (120 included) |
 | **Agents** | Specialized AI personalities — architect, engineer, security auditor, researcher |
 | **Hooks** | Event-driven TypeScript automation (session start/end, tool use, context compression) |
 | **History** | Automatic documentation system that captures sessions, learnings, and research |
@@ -57,7 +57,7 @@ Forge remembers your projects, preferences, decisions, and context between conve
 
 Launch research across 5+ AI models simultaneously — Claude, Gemini, Perplexity, Grok, and local Ollama. Each brings different strengths. Results are synthesized into a single, comprehensive analysis. One prompt, five perspectives.
 
-### 125+ Skills with Auto-Activation
+### 120 Skills with Auto-Activation
 
 Say "research VitePress alternatives" and the Research skill activates automatically. Say "create a CLI tool" and CreateCLI takes over. No slash commands to memorize — skills route based on natural language triggers. Categories span security, development, business advisory, document processing, QA, and more.
 
@@ -242,7 +242,7 @@ forge-help    # See all commands
 
 Skills are self-contained AI capability packages that activate automatically based on trigger words in your requests. Each skill contains routing logic, workflows, reference docs, and CLI tools.
 
-### Included Skills (~125)
+### Included Skills (120)
 
 | Category | Skills |
 |----------|--------|
@@ -257,6 +257,7 @@ Skills are self-contained AI capability packages that activate automatically bas
 | **Operations** | Trading, EmailManager, TelegramBot, TelegramStatus, DiscordAdmin |
 | **Workflow** | WritingPlans, ExecutingPlans, WorkflowOrchestration, Algorithm, Governance |
 | **QA & Review** | qa, qa-only, review, benchmark, design-review, PeerScan, ReviewBrief |
+| **Obsidian & Wiki** | wiki, wiki-ingest, wiki-query, wiki-lint, autoresearch, canvas, defuddle, save, obsidian-bases, obsidian-markdown |
 
 ### Creating Your Own
 
@@ -366,7 +367,7 @@ Full philosophy: [`.claude/skills/CORE/CONSTITUTION.md`](.claude/skills/CORE/CON
 │   │   ├── capture-tool-output.ts
 │   │   ├── stop-hook.ts
 │   │   └── lib/pai-paths.ts   # Centralized path resolution
-│   ├── skills/                # ~125 domain-specific capabilities
+│   ├── skills/                # 120 domain-specific capabilities
 │   │   ├── CORE/              # Identity, architecture, principles
 │   │   ├── Fabric/            # 248 native AI patterns
 │   │   ├── Research/          # Multi-source research workflows
