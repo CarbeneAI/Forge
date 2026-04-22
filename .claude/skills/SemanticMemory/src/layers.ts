@@ -10,6 +10,7 @@
  */
 
 import { initDb, getDb } from "./db.js";
+import { existsSync, readFileSync } from "fs";
 import { loadConfig, PAI_DIR } from "./config.js";
 import { search } from "./search.js";
 import type { SourceType, SearchResult } from "./types.js";
@@ -107,9 +108,8 @@ export async function loadIdentity(): Promise<LayerResult> {
   const sourcePaths: string[] = [];
 
   try {
-    const file = Bun.file(IDENTITY_FILE);
-    if (await file.exists()) {
-      text = (await file.text()).trimEnd();
+    if (existsSync(IDENTITY_FILE)) {
+      text = readFileSync(IDENTITY_FILE, "utf-8").trimEnd();
       sourcePaths.push(IDENTITY_FILE);
     }
   } catch {

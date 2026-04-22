@@ -48,7 +48,7 @@ export class OpenAIEmbeddingProvider implements EmbeddingProvider {
             console.error(
               `[openai] HTTP ${response.status}. Retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_RETRIES})...`
             );
-            await Bun.sleep(delay);
+            await new Promise(r => setTimeout(r, delay));
             continue;
           }
         }
@@ -71,7 +71,7 @@ export class OpenAIEmbeddingProvider implements EmbeddingProvider {
           console.error(
             `[openai] Network error: ${err.message}. Retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_RETRIES})...`
           );
-          await Bun.sleep(delay);
+          await new Promise(r => setTimeout(r, delay));
           continue;
         }
         throw err;

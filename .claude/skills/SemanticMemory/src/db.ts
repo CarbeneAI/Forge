@@ -5,14 +5,14 @@
  * provides typed helpers for queries and transactions.
  */
 
-import { Database } from "bun:sqlite";
+import Database from "better-sqlite3";
 import * as sqliteVec from "sqlite-vec";
 import { loadConfig } from "./config.js";
 import type { SemanticMemoryConfig } from "./types.js";
 import { mkdirSync, existsSync } from "fs";
 import { dirname } from "path";
 
-let _db: Database | null = null;
+let _db: Database.Database | null = null;
 
 /**
  * Schema creation SQL statements.
@@ -74,7 +74,7 @@ CREATE INDEX IF NOT EXISTS idx_embedding_cache_created ON embedding_cache(create
  * Create the vec0 virtual table for vector storage.
  * This must be done after sqlite-vec is loaded.
  */
-function createVecTable(db: Database, dims: number): void {
+function createVecTable(db: Database.Database, dims: number): void {
   // Check if the table already exists by trying to query it
   try {
     db.exec(`SELECT COUNT(*) FROM chunks_vec`);
@@ -92,7 +92,7 @@ function createVecTable(db: Database, dims: number): void {
 /**
  * Create the FTS5 virtual table for full-text search.
  */
-function createFtsTable(db: Database): void {
+function createFtsTable(db: Database.Database): void {
   try {
     db.exec(`SELECT COUNT(*) FROM chunks_fts`);
   } catch {
@@ -113,7 +113,7 @@ function createFtsTable(db: Database): void {
 /**
  * Insert default meta values if they don't exist.
  */
-function initializeMetaDefaults(db: Database, config: SemanticMemoryConfig): void {
+function initializeMetaDefaults(db: Database.Database, config: SemanticMemoryConfig): void {
   const insertOrIgnore = db.prepare(
     `INSERT OR IGNORE INTO meta (key, value) VALUES (?, ?)`
   );
@@ -140,7 +140,7 @@ function initializeMetaDefaults(db: Database, config: SemanticMemoryConfig): voi
  * Check if stored config matches current config.
  * Returns true if a full reindex is needed.
  */
-function checkConfigMismatch(db: Database, config: SemanticMemoryConfig): boolean {
+function checkConfigMismatch(db: Database.Database, config: SemanticMemoryConfig): boolean {
   const storedModel = getMetaValueFromDb(db, "embedding_model");
   const storedDims = getMetaValueFromDb(db, "embedding_dims");
   const storedProvider = getMetaValueFromDb(db, "embedding_provider");
@@ -167,14 +167,14 @@ function checkConfigMismatch(db: Database, config: SemanticMemoryConfig): boolea
   return mismatch;
 }
 
-function getMetaValueFromDb(db: Database, key: string): string | null {
+function getMetaValueFromDb(db: Database.Database, key: string): string | null {
   const row = db.prepare("SELECT value FROM meta WHERE key = ?").get(key) as
     | { value: string }
     | null;
   return row?.value ?? null;
 }
 
-function setMetaValueInDb(db: Database, key: string, value: string): void {
+function setMetaValueInDb(db: Database.Database, key: string, value: string): void {
   db.prepare("INSERT OR REPLACE INTO meta (key, value) VALUES (?, ?)").run(
     key,
     value
@@ -188,7 +188,7 @@ function setMetaValueInDb(db: Database, key: string, value: string): void {
  */
 export async function initDb(
   config?: SemanticMemoryConfig
-): Promise<{ db: Database; needsReindex: boolean }> {
+): Promise<{ db: Database.Database; needsReindex: boolean }> {
   if (_db) {
     return { db: _db, needsReindex: false };
   }
@@ -242,7 +242,7 @@ export async function initDb(
 /**
  * Get the database instance. Throws if not initialized.
  */
-export function getDb(): Database {
+export function getDb(): Database.Database {
   if (!_db) {
     throw new Error("Database not initialized. Call initDb() first.");
   }

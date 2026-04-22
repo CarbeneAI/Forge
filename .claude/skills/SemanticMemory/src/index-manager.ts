@@ -5,7 +5,8 @@
  * Hash-based change detection, embedding cache, batch embedding, concurrent file processing.
  */
 
-import { existsSync, statSync, readdirSync } from "fs";
+import { existsSync, statSync, readFileSync, globSync } from "fs";
+import { createHash } from "crypto";
 import { join, resolve } from "path";
 import { getDb, initDb, runInTransaction, setMetaValue } from "./db.js";
 import { loadConfig } from "./config.js";
@@ -69,11 +70,9 @@ export async function discoverFiles(
     }
 
     try {
-      const glob = new Bun.Glob(source.glob);
-      const matches = glob.scanSync({
+      const matches = globSync(source.glob, {
         cwd: source.path,
-        absolute: false,
-        onlyFiles: true,
+        nodir: true,
       });
 
       for (const match of matches) {
@@ -118,19 +117,15 @@ export async function discoverFiles(
  * Compute SHA-256 hash of file content.
  */
 export async function computeFileHash(path: string): Promise<string> {
-  const content = await Bun.file(path).arrayBuffer();
-  const hasher = new Bun.CryptoHasher("sha256");
-  hasher.update(new Uint8Array(content));
-  return hasher.digest("hex");
+  const content = readFileSync(path);
+  return createHash("sha256").update(content).digest("hex");
 }
 
 /**
  * Compute SHA-256 hash of a text string.
  */
 function computeTextHash(text: string): string {
-  const hasher = new Bun.CryptoHasher("sha256");
-  hasher.update(text);
-  return hasher.digest("hex");
+  return createHash("sha256").update(text).digest("hex");
 }
 
 /**
@@ -143,9 +138,7 @@ function generateChunkId(
   endLine: number,
   contentHash: string
 ): string {
-  const hasher = new Bun.CryptoHasher("sha256");
-  hasher.update(`${path}:${startLine}:${endLine}:${contentHash}`);
-  return hasher.digest("hex");
+  return createHash("sha256").update(`${path}:${startLine}:${endLine}:${contentHash}`).digest("hex");
 }
 
 /**
@@ -210,7 +203,7 @@ async function processFile(
   config: SemanticMemoryConfig
 ): Promise<{ chunks: Chunk[]; hash: string } | null> {
   try {
-    const content = await Bun.file(file.path).text();
+    const content = readFileSync(file.path, "utf-8");
 
     // Check for sensitive content
     if (await hasSensitiveContent(content)) {

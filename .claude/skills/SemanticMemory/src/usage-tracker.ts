@@ -5,7 +5,7 @@
  * Provides aggregation for dashboards and cost monitoring.
  */
 
-import { existsSync, mkdirSync, appendFileSync, readFileSync } from "fs";
+import { existsSync, mkdirSync, appendFileSync, readFileSync, writeFileSync } from "fs";
 import { dirname } from "path";
 import type {
   TokenUsageEntry,
@@ -124,7 +124,7 @@ export function computeUsageStats(): TokenUsageStats {
   try {
     const dir = dirname(STATS_FILE);
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-    Bun.write(STATS_FILE, JSON.stringify(stats, null, 2));
+    writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2));
   } catch (err) {
     console.error(`[usage-tracker] Failed to write stats: ${err}`);
   }

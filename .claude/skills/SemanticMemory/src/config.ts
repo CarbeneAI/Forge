@@ -6,6 +6,7 @@
  */
 
 import type { SemanticMemoryConfig, SourceConfig } from "./types.js";
+import { readFileSync, existsSync } from "fs";
 
 const PAI_DIR = process.env.PAI_DIR || `${process.env.HOME || "/home/youruser"}/.claude`;
 const HOME = process.env.HOME || "/home/youruser";
@@ -84,9 +85,8 @@ async function loadApiKeys(): Promise<{
 }> {
   const envPath = `${PAI_DIR}/.env`;
   try {
-    const file = Bun.file(envPath);
-    if (await file.exists()) {
-      const content = await file.text();
+    if (existsSync(envPath)) {
+      const content = readFileSync(envPath, "utf-8");
       const env = parseDotEnv(content);
       return {
         googleApiKey: env["GOOGLE_API_KEY"] || "",
@@ -105,9 +105,8 @@ async function loadApiKeys(): Promise<{
 async function loadConfigFile(): Promise<Partial<SemanticMemoryConfig>> {
   const configPath = `${PAI_DIR}/data/semantic-memory/config.json`;
   try {
-    const file = Bun.file(configPath);
-    if (await file.exists()) {
-      const content = await file.json();
+    if (existsSync(configPath)) {
+      const content = JSON.parse(readFileSync(configPath, "utf-8"));
       return content as Partial<SemanticMemoryConfig>;
     }
   } catch (err) {

@@ -50,7 +50,7 @@ export class GeminiEmbeddingProvider implements EmbeddingProvider {
         console.error(
           `[gemini] Rate limit approaching (${this.requestTimestamps.length}/${MAX_RPM} RPM). Waiting ${waitMs}ms...`
         );
-        await Bun.sleep(waitMs);
+        await new Promise(r => setTimeout(r, waitMs));
       }
     }
 
@@ -82,7 +82,7 @@ export class GeminiEmbeddingProvider implements EmbeddingProvider {
             console.error(
               `[gemini] HTTP ${response.status}. Retrying in ${delay}ms (attempt ${attempt + 1}/${retries})...`
             );
-            await Bun.sleep(delay);
+            await new Promise(r => setTimeout(r, delay));
             continue;
           }
         }
@@ -105,7 +105,7 @@ export class GeminiEmbeddingProvider implements EmbeddingProvider {
           console.error(
             `[gemini] Network error: ${err.message}. Retrying in ${delay}ms (attempt ${attempt + 1}/${retries})...`
           );
-          await Bun.sleep(delay);
+          await new Promise(r => setTimeout(r, delay));
           continue;
         }
         throw err;
