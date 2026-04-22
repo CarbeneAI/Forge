@@ -103,10 +103,10 @@ Entity-relationship triples with time validity. Track who/what/when facts with `
 
 ```bash
 # Add a fact
-bun ${PAI_DIR}/skills/SemanticMemory/tools/KnowledgeGraph.ts add "Clint" "owns" "CarbeneAI" --from 2024-01-01 --type person
+bun ${PAI_DIR}/skills/SemanticMemory/tools/KnowledgeGraph.ts add "YourName" "owns" "YourCompany" --from 2024-01-01 --type person
 
 # Query active facts
-bun ${PAI_DIR}/skills/SemanticMemory/tools/KnowledgeGraph.ts query --subject Clint --json
+bun ${PAI_DIR}/skills/SemanticMemory/tools/KnowledgeGraph.ts query --subject YourName --json
 
 # Point-in-time query ("what was true on this date?")
 bun ${PAI_DIR}/skills/SemanticMemory/tools/KnowledgeGraph.ts query --as-of 2025-06-01
@@ -115,7 +115,7 @@ bun ${PAI_DIR}/skills/SemanticMemory/tools/KnowledgeGraph.ts query --as-of 2025-
 bun ${PAI_DIR}/skills/SemanticMemory/tools/KnowledgeGraph.ts invalidate 3
 
 # Entity timeline
-bun ${PAI_DIR}/skills/SemanticMemory/tools/KnowledgeGraph.ts timeline "CarbeneAI"
+bun ${PAI_DIR}/skills/SemanticMemory/tools/KnowledgeGraph.ts timeline "YourCompany"
 
 # Stats
 bun ${PAI_DIR}/skills/SemanticMemory/tools/KnowledgeGraph.ts stats

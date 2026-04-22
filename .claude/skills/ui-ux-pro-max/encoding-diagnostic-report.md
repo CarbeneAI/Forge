@@ -50,7 +50,7 @@ We used a Python script with proper MySQL connector to:
    DB_CONFIG = {
        'host': 'localhost',
        'user': 'wpuser',
-       'password': 'WpSecurePass2025!',
+       'password': 'your_wp_password_here',
        'database': 'wordpress',
        'charset': 'utf8mb4',           # Critical!
        'collation': 'utf8mb4_unicode_ci',
@@ -212,7 +212,7 @@ import mysql.connector
 conn = mysql.connector.connect(
     host='localhost',
     user='wpuser',
-    password='WpSecurePass2025!',
+    password='your_wp_password_here',
     database='wordpress',
     charset='utf8mb4'
 )
@@ -291,7 +291,7 @@ with open('content.html', 'r', encoding='utf-8') as f:
 conn = mysql.connector.connect(
     host='localhost',
     user='wpuser',
-    password='WpSecurePass2025!',
+    password='your_wp_password_here',
     database='wordpress',
     charset='utf8mb4',
     use_unicode=True

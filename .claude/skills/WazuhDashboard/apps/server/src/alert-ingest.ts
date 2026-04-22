@@ -26,7 +26,7 @@ let onAlertsReceived: ((alerts: WazuhAlert[]) => void) | null = null;
 
 // Wazuh Dashboard API configuration (proxies to Indexer on port 443)
 // Note: Indexer port 9200 is localhost-only, so we use the Dashboard API proxy
-const WAZUH_DASHBOARD_URL = process.env.WAZUH_DASHBOARD_URL || 'https://192.168.1.76';
+const WAZUH_DASHBOARD_URL = process.env.WAZUH_DASHBOARD_URL || 'https://10.0.0.60';
 const WAZUH_DASHBOARD_USER = process.env.WAZUH_DASHBOARD_USER || 'admin';
 const WAZUH_DASHBOARD_PASSWORD = process.env.WAZUH_DASHBOARD_PASSWORD || '';
 const POLL_INTERVAL_MS = parseInt(process.env.WAZUH_POLL_INTERVAL || '30000'); // 30 seconds

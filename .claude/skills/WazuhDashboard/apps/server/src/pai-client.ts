@@ -11,7 +11,7 @@ import type { WazuhAlert, PAIChatMessage, PAIChatResponse } from './types';
 const PAI_API_URL = process.env.PAI_API_URL || 'http://localhost:3001/v1/messages';
 
 // Wazuh Dashboard API configuration (same as alert-ingest.ts)
-const WAZUH_DASHBOARD_URL = process.env.WAZUH_DASHBOARD_URL || 'https://192.168.1.76';
+const WAZUH_DASHBOARD_URL = process.env.WAZUH_DASHBOARD_URL || 'https://10.0.0.60';
 const WAZUH_DASHBOARD_USER = process.env.WAZUH_DASHBOARD_USER || 'admin';
 const WAZUH_DASHBOARD_PASSWORD = process.env.WAZUH_DASHBOARD_PASSWORD || '';
 

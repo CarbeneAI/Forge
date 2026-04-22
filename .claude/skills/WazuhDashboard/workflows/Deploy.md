@@ -3,7 +3,7 @@
 ## Architecture
 
 ```
-Wazuh Manager (192.168.1.x)
+Wazuh Manager (10.0.0.x)
   → custom-webhook script POSTs alert JSON
   → n8n webhook (n8n.home.yourdomain.com/webhook/wazuh-alerts)
   → n8n HTTP Request node POSTs to dashboard API
@@ -16,10 +16,10 @@ n8n runs on a separate host (not on the dashboard machine). It cannot write to t
 ## Prerequisites
 
 1. **DNS Entry in Pi-hole**
-   - Add local DNS record: `wazuh-dashboard.home.yourdomain.com` → `192.168.1.92`
-   - Add local DNS record: `wazuh-dashboard-api.home.yourdomain.com` → `192.168.1.92`
+   - Add local DNS record: `wazuh-dashboard.home.yourdomain.com` → `10.0.0.70`
+   - Add local DNS record: `wazuh-dashboard-api.home.yourdomain.com` → `10.0.0.70`
 
-2. **Dashboard server running on your host machine (192.168.1.81)**
+2. **Dashboard server running on your host machine (10.0.0.10)**
    - Server listens on port 4001 with POST `/alerts/ingest` endpoint
    - Accepts single alert or array of alerts as JSON body
    - Broadcasts to WebSocket clients automatically
@@ -29,7 +29,7 @@ n8n runs on a separate host (not on the dashboard machine). It cannot write to t
 ### 1. Copy Traefik Config to Remote
 
 ```bash
-scp ~/PAI/homelab-deploy/traefik/dynamic.yml youruser@192.168.1.92:~/homelab-deploy/traefik/
+scp ~/PAI/homelab-deploy/traefik/dynamic.yml youruser@10.0.0.70:~/homelab-deploy/traefik/
 ```
 
 Traefik auto-reloads (watch: true is enabled).
@@ -89,7 +89,7 @@ curl -I https://wazuh-dashboard.home.yourdomain.com
 
 ### Configure Wazuh Custom Integration Script
 
-SSH to Wazuh manager (192.168.1.76) and create the integration script:
+SSH to Wazuh manager (10.0.0.60) and create the integration script:
 
 ```bash
 sudo tee /var/ossec/integrations/custom-webhook > /dev/null << 'SCRIPT'
@@ -212,7 +212,7 @@ bun run dev
 cd ~/.claude/skills/WazuhDashboard/apps/client
 bun run dev
 
-# Wazuh integration logs (Wazuh server 192.168.1.76)
+# Wazuh integration logs (Wazuh server 10.0.0.60)
 sudo tail -f /var/ossec/logs/integrations.log
 ```
 
@@ -226,7 +226,7 @@ sudo tail -f /var/ossec/logs/integrations.log
    - Test n8n webhook: `curl -X POST https://n8n.home.yourdomain.com/webhook/wazuh-alerts -H "Content-Type: application/json" -d '{"test":true}'`
    - Test dashboard ingest directly: `curl -X POST http://localhost:4001/alerts/ingest -H "Content-Type: application/json" -d '{"rule":{"level":5,"description":"direct test"}}'`
    - Check n8n execution history for errors
-   - Check Wazuh integration logs: `sudo tail /var/ossec/logs/integrations.log` on 192.168.1.76
+   - Check Wazuh integration logs: `sudo tail /var/ossec/logs/integrations.log` on 10.0.0.60
 
 3. **PAI chat not responding**
    - Verify ANTHROPIC_API_KEY in ~/.claude/.env

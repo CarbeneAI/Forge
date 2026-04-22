@@ -27,7 +27,7 @@ Create a Markdown file following the outline format (see `reference/OutlineForma
 ---
 title: AI Security Strategy
 subtitle: Board Presentation Q1 2026
-author: Clint Garrison
+author: Your Name
 date: 2026-02-03
 ---
 

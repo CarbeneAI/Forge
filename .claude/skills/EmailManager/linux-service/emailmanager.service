@@ -1,28 +1,28 @@
 [Unit]
 Description=PAI Email Monitor Service
-Documentation=https://github.com/cgarrison/.pai
+Documentation=https://github.com/YOUR_USERNAME/your-repo
 After=network.target
 
 [Service]
 Type=simple
-User=cgarrison
-Group=cgarrison
-WorkingDirectory=/home/cgarrison/.claude/skills/EmailManager
-ExecStart=/home/cgarrison/.bun/bin/bun /home/cgarrison/.claude/skills/EmailManager/tools/EmailMonitor.ts --daemon
+User=youruser
+Group=youruser
+WorkingDirectory=/home/youruser/.claude/skills/EmailManager
+ExecStart=/home/youruser/.bun/bin/bun /home/youruser/.claude/skills/EmailManager/tools/EmailMonitor.ts --daemon
 Restart=on-failure
 RestartSec=10
-StandardOutput=append:/home/cgarrison/.claude/skills/EmailManager/data/emailmonitor.log
-StandardError=append:/home/cgarrison/.claude/skills/EmailManager/data/emailmonitor.log
+StandardOutput=append:/home/youruser/.claude/skills/EmailManager/data/emailmonitor.log
+StandardError=append:/home/youruser/.claude/skills/EmailManager/data/emailmonitor.log
 
 # Environment
-Environment=HOME=/home/cgarrison
-Environment=PATH=/home/cgarrison/.bun/bin:/usr/local/bin:/usr/bin:/bin
+Environment=HOME=/home/youruser
+Environment=PATH=/home/youruser/.bun/bin:/usr/local/bin:/usr/bin:/bin
 
 # Security
 NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=read-only
-ReadWritePaths=/home/cgarrison/.claude/skills/EmailManager/data
+ReadWritePaths=/home/youruser/.claude/skills/EmailManager/data
 PrivateTmp=true
 
 [Install]

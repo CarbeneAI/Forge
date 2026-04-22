@@ -10,7 +10,7 @@ Real-time security monitoring dashboard for Wazuh SIEM alerts with integrated PA
 ## Architecture
 
 ```
-Wazuh (192.168.1.76) → n8n webhook → JSONL file → Dashboard Server (WebSocket) → Vue Client
+Wazuh (10.0.0.60) → n8n webhook → JSONL file → Dashboard Server (WebSocket) → Vue Client
                                                                     ↓
                                                           PAI API (localhost:3001)
 ```

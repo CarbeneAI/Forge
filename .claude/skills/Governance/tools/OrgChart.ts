@@ -45,7 +45,7 @@ interface OrgNode {
 
 const HIERARCHY: OrgNode = {
   id: "ceo",
-  label: "Clint Garrison",
+  label: "CEO Name",
   role: "CEO",
   human: true,
   children: [

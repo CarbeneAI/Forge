@@ -183,7 +183,7 @@ User: "How are we doing on budgets this month?"
 User: "Deploy carbene.ai changes"
 → ApprovalGate.ts check deploy --agent hiram
 → Gate triggered → sends Telegram approval request
-→ Waits for Clint's "approve" reply
+→ Waits for the user's "approve" reply
 → Proceeds with deployment
 ```
 

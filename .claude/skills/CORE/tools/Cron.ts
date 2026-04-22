@@ -39,7 +39,7 @@ const HOSTS = {
   },
   remote: {
     name: "remote - configure your server",
-    ssh: process.env.REMOTE_SSH_HOST || "youruser@192.168.1.20",
+    ssh: process.env.REMOTE_SSH_HOST || "youruser@10.0.0.20",
   },
 };
 

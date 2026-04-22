@@ -15,7 +15,7 @@ Generates structured performance review documents by synthesizing evidence from 
 
 ## Examples
 
-**Example 1: Self-review for Clint**
+**Example 1: Self-review for Your Name**
 ```
 User: "Generate a self-review brief for Q1 2026"
 → Searches Obsidian vault for wins, projects, decisions

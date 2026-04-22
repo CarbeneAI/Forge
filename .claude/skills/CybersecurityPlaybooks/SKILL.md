@@ -69,12 +69,12 @@ license: Apache-2.0
 
 ## Usage with Talon (Kali MCP)
 
-These playbooks are designed to work with the Talon MCP server (SSH to Kali VM at 192.168.2.121). When a playbook references a tool command, execute it via the Kali MCP:
+These playbooks are designed to work with the Talon MCP server (SSH to Kali VM at 10.0.0.50). When a playbook references a tool command, execute it via the Kali MCP:
 
 ```
 User: "Run a kerberoasting attack against the lab domain"
 -> Load reference/RedTeam/Kerberoasting.md
--> Execute commands via Kali MCP (SSH to 192.168.2.121)
+-> Execute commands via Kali MCP (SSH to 10.0.0.50)
 -> Follow the playbook phases: Enumerate -> Request TGS -> Crack -> Validate
 ```
 

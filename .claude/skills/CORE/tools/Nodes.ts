@@ -46,12 +46,12 @@ interface Host {
 
 const HOSTS: Host[] = [
   // Configure your homelab hosts here
-  { id: 'primary', name: 'Primary Host', ip: '192.168.1.10', role: 'PAI Primary', local: true },
-  { id: 'server', name: 'Server', ip: '192.168.1.20', role: 'Services host' },
-  { id: 'nas', name: 'NAS', ip: '192.168.1.3', role: 'NAS, storage' },
-  { id: 'proxmox', name: 'Proxmox', ip: '192.168.1.5', role: 'Virtualization' },
-  { id: 'kali', name: 'Kali Linux', ip: '192.168.1.121', role: 'Pentesting VM' },
-  { id: 'wazuh', name: 'Wazuh', ip: '192.168.1.76', role: 'SIEM' },
+  { id: 'primary', name: 'Primary Host', ip: '10.0.0.10', role: 'PAI Primary', local: true },
+  { id: 'server', name: 'Server', ip: '10.0.0.20', role: 'Services host' },
+  { id: 'nas', name: 'NAS', ip: '10.0.0.30', role: 'NAS, storage' },
+  { id: 'proxmox', name: 'Proxmox', ip: '10.0.0.40', role: 'Virtualization' },
+  { id: 'kali', name: 'Kali Linux', ip: '10.0.0.50', role: 'Pentesting VM' },
+  { id: 'wazuh', name: 'Wazuh', ip: '10.0.0.60', role: 'SIEM' },
 ];
 
 const SSH_USER = process.env.SSH_USER || 'youruser';

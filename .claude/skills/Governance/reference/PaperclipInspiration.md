@@ -29,7 +29,7 @@
 ## Design Decisions
 
 1. **YAML over database** — Configs are human-readable, git-trackable, and don't require a running service
-2. **Telegram over web UI** — Clint already has Telegram bot infrastructure; approvals via mobile are faster than opening a dashboard
+2. **Telegram over web UI** — The user already has Telegram bot infrastructure; approvals via mobile are faster than opening a dashboard
 3. **Mermaid over custom SVG** — Mermaid is a standard, renders anywhere (GitHub, Obsidian, VS Code), and doesn't need a browser
 4. **Cron over heartbeat engine** — Standing orders sync to system cron rather than requiring a persistent process
 5. **File locks over database transactions** — Simple, no dependencies, works across Claude Code sessions

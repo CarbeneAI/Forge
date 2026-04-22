@@ -6,20 +6,20 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/home/cgarrison/.bun/bin/bun /home/cgarrison/.claude/skills/DiscordAdmin/tools/DiscordBot.ts
+ExecStart=/home/youruser/.bun/bin/bun /home/youruser/.claude/skills/DiscordAdmin/tools/DiscordBot.ts
 Restart=always
 RestartSec=10
 
 # Environment
-Environment=PAI_DIR=/home/cgarrison/.claude
-Environment=HOME=/home/cgarrison
+Environment=PAI_DIR=/home/youruser/.claude
+Environment=HOME=/home/youruser
 
 # Logging
-StandardOutput=append:/home/cgarrison/.claude/logs/discord-bot.log
-StandardError=append:/home/cgarrison/.claude/logs/discord-bot.log
+StandardOutput=append:/home/youruser/.claude/logs/discord-bot.log
+StandardError=append:/home/youruser/.claude/logs/discord-bot.log
 
 # Working directory
-WorkingDirectory=/home/cgarrison/.claude/skills/DiscordAdmin/tools
+WorkingDirectory=/home/youruser/.claude/skills/DiscordAdmin/tools
 
 [Install]
 WantedBy=default.target

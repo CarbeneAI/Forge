@@ -1,21 +1,21 @@
 [Unit]
 Description=Wazuh Security Dashboard
-Documentation=https://github.com/cgarrison/PAI
+Documentation=https://github.com/YOUR_USERNAME/your-repo
 After=network.target
 
 [Service]
 Type=simple
-User=cgarrison
-Group=cgarrison
-WorkingDirectory=/home/cgarrison/PAI/.claude/skills/WazuhDashboard
-ExecStart=/home/cgarrison/PAI/.claude/skills/WazuhDashboard/manage.sh start
-ExecStop=/home/cgarrison/PAI/.claude/skills/WazuhDashboard/manage.sh stop
+User=youruser
+Group=youruser
+WorkingDirectory=/home/youruser/PAI/.claude/skills/WazuhDashboard
+ExecStart=/home/youruser/PAI/.claude/skills/WazuhDashboard/manage.sh start
+ExecStop=/home/youruser/PAI/.claude/skills/WazuhDashboard/manage.sh stop
 Restart=on-failure
 RestartSec=10
 
 # Environment
-Environment="HOME=/home/cgarrison"
-Environment="PATH=/home/cgarrison/.bun/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="HOME=/home/youruser"
+Environment="PATH=/home/youruser/.bun/bin:/usr/local/bin:/usr/bin:/bin"
 
 # Logging
 StandardOutput=journal

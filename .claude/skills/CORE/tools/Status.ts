@@ -263,7 +263,7 @@ async function collectStatusData(): Promise<StatusData> {
   // Ubuntu server cron (via SSH, graceful failure)
   let ubuntuCronJobs: number | null = null;
   try {
-    const remoteHost = process.env.REMOTE_SSH_HOST || 'youruser@192.168.1.20';
+    const remoteHost = process.env.REMOTE_SSH_HOST || 'youruser@10.0.0.20';
     const ubuntuCron = shellExec(`ssh -o ConnectTimeout=5 ${remoteHost} "crontab -l 2>/dev/null | grep -E '(bun|PAI|.claude)' | grep -v '^#' | wc -l"`, 5000);
     if (ubuntuCron) {
       ubuntuCronJobs = parseInt(ubuntuCron, 10);
@@ -337,9 +337,9 @@ async function collectStatusData(): Promise<StatusData> {
   const lastCommitDate = shellExec(`git -C "${REPO_ROOT}" log -1 --format=%cr 2>/dev/null`) || 'unknown';
 
   // Node health — configure your homelab IPs via environment variables or edit these defaults
-  const ubuntuOnline = await pingHost(process.env.NODE_UBUNTU_IP || '192.168.1.20', 1000);
-  const synologyOnline = await pingHost(process.env.NODE_NAS_IP || '192.168.1.3', 1000);
-  const proxmoxOnline = await pingHost(process.env.NODE_PROXMOX_IP || '192.168.1.5', 1000);
+  const ubuntuOnline = await pingHost(process.env.NODE_UBUNTU_IP || '10.0.0.20', 1000);
+  const synologyOnline = await pingHost(process.env.NODE_NAS_IP || '10.0.0.30', 1000);
+  const proxmoxOnline = await pingHost(process.env.NODE_PROXMOX_IP || '10.0.0.40', 1000);
 
   return {
     system: {

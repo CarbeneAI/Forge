@@ -11,7 +11,7 @@ export default defineConfig({
     allowedHosts: [
       'localhost',
       // Add your host IP and domain here, e.g.:
-      // '192.168.1.10',
+      // '10.0.0.10',
       // 'observability.home.yourdomain.com',
     ],
   },

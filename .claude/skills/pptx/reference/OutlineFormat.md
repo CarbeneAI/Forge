@@ -37,7 +37,7 @@ Required between `---` delimiters at the top of the file.
 |-------|----------|---------|-------------|
 | `title` | Yes | - | Presentation title (appears on title slide) |
 | `subtitle` | No | "" | Subtitle text |
-| `author` | No | "Clint Garrison" | Author name for metadata |
+| `author` | No | "Your Name" | Author name for metadata |
 | `date` | No | Today | Date string |
 | `brand` | No | "professional" | Can be overridden by CLI `--brand` flag |
 
@@ -99,7 +99,7 @@ Place the comment immediately after the heading.
 ---
 title: CarbeneAI Security Advisory
 subtitle: Quarterly Review Q1 2026
-author: Clint Garrison
+author: Your Name
 date: 2026-02-03
 brand: carbeneai
 ---

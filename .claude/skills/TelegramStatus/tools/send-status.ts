@@ -169,7 +169,7 @@ async function getBackupStatus(): Promise<{
 
   // Ubuntu + Synology via SSH to Ubuntu Server's Kopia
   try {
-    const proc = Bun.spawn(['ssh', '-o', 'ConnectTimeout=5', 'youruser@192.168.1.20',
+    const proc = Bun.spawn(['ssh', '-o', 'ConnectTimeout=5', 'youruser@10.0.0.20',
       'docker exec kopia kopia snapshot list --all --json'], {
       stdout: 'pipe', stderr: 'pipe',
     });
@@ -183,7 +183,7 @@ async function getBackupStatus(): Promise<{
       if (host.includes('106e4e4c40f5') || host.includes('kopia')) {
         // Ubuntu server kopia container
         result.ubuntu = { lastBackup: time, success: true };
-      } else if (host.includes('b3e4226c') || host.includes('synology')) {
+      } else if (host.includes('your_container_id') || host.includes('synology')) {
         // Synology kopia container
         result.synology = { lastBackup: time, success: true };
       }
@@ -192,7 +192,7 @@ async function getBackupStatus(): Promise<{
 
   // Google Drive sync check via rclone
   try {
-    const proc = Bun.spawn(['ssh', '-o', 'ConnectTimeout=5', 'youruser@192.168.1.20',
+    const proc = Bun.spawn(['ssh', '-o', 'ConnectTimeout=5', 'youruser@10.0.0.20',
       'rclone lsd gdrive:Backups/kopia/ 2>/dev/null | head -1'], {
       stdout: 'pipe', stderr: 'pipe',
     });

@@ -84,7 +84,7 @@ bun ResponseDrafter.ts draft --account personal --message-id abc123 \
 
 # 4. Send after approval
 bun ResponseDrafter.ts send --account personal --message-id abc123 \
-  --draft "Hi John,\n\nThanks for reaching out! I'd love to meet, but Wednesday doesn't work for me. Would Thursday at 2pm work instead?\n\nBest,\nClint"
+  --draft "Hi John,\n\nThanks for reaching out! I'd love to meet, but Wednesday doesn't work for me. Would Thursday at 2pm work instead?\n\nBest,\nYour Name"
 ```
 
 ## Tone Guide

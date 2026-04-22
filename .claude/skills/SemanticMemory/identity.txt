@@ -1,3 +1,3 @@
-PAI (Personal AI Infrastructure) — Clint Garrison's AI assistant.
+PAI (Personal AI Infrastructure) — your AI assistant.
 Built on Claude Code with skills-based architecture, event-driven automation, and multi-agent orchestration.
-CarbeneAI: AI Strategy, Security, Executive Advisory. "Security Built In, Not Bolted On."
+Customize this file with your own identity and purpose.

@@ -8,12 +8,12 @@
 import { homedir } from 'os';
 
 // Suricata suppression (Ubuntu Server - runs Suricata container)
-const SURICATA_HOST = process.env.SURICATA_HOST || 'youruser@192.168.1.92';
+const SURICATA_HOST = process.env.SURICATA_HOST || 'youruser@10.0.0.70';
 const LOCAL_DISABLE_CONF = process.env.SURICATA_DISABLE_CONF || `${homedir()}/homelab-deploy/suricata/config/disable.conf`;
 const REMOTE_DISABLE_CONF = '~/homelab-deploy/suricata/config/disable.conf';
 
 // Wazuh suppression (Wazuh Server)
-const WAZUH_HOST = process.env.WAZUH_HOST || 'youruser@192.168.1.76';
+const WAZUH_HOST = process.env.WAZUH_HOST || 'youruser@10.0.0.60';
 const WAZUH_LOCAL_RULES = '/var/ossec/etc/rules/local_rules.xml';
 
 /**

@@ -76,7 +76,7 @@ After Fix:
 conn = mysql.connector.connect(
     host='localhost',
     user='wpuser',
-    password='WpSecurePass2025!',
+    password='your_wp_password_here',
     database='wordpress',
     charset='utf8mb4',           # Critical for proper encoding
     collation='utf8mb4_unicode_ci',

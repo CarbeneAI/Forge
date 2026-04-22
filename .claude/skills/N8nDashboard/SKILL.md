@@ -25,7 +25,7 @@ n8n API (your-n8n-host:5678) → Dashboard Server (port 4002) → Vue Client (po
 
 - n8n API key (generate in n8n Settings > n8n API)
 - Environment variable: `N8N_API_KEY` in `~/.claude/.env`
-- Environment variable: `N8N_API_URL` (default: http://192.168.1.20:5678)
+- Environment variable: `N8N_API_URL` (default: http://10.0.0.20:5678)
 
 ## Quick Start
 
@@ -72,5 +72,5 @@ n8n API (your-n8n-host:5678) → Dashboard Server (port 4002) → Vue Client (po
 4. Add to `~/.claude/.env`:
    ```
    N8N_API_KEY=your-api-key-here
-   N8N_API_URL=http://192.168.1.20:5678
+   N8N_API_URL=http://10.0.0.20:5678
    ```

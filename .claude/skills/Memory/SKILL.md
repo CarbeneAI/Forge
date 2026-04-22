@@ -164,6 +164,6 @@ The `SessionEnd` hook should:
 - Production domain: carbene.ai
 - Homelab domain: yourdomain.com
 - Google Apps Script in `docs/google-apps-script.js`
-- Notification email: clint@carbene.ai
+- Notification email: you@yourdomain.com
 - Assessment has 10 questions with duplicate score values
 - Apps Script requires new deployment after code changes
