@@ -51,7 +51,7 @@ Most AI coding tools give you autocomplete. Forge gives you an **AI operations t
 
 ### Persistent Memory Across Sessions
 
-Forge remembers your projects, preferences, decisions, and context between conversations. No more re-explaining your stack, your architecture choices, or your coding style every session. Semantic memory with temporal knowledge graphs means Forge gets smarter the more you use it.
+Forge remembers your projects, preferences, decisions, and context between conversations. No more re-explaining your stack, your architecture choices, or your coding style every session. Semantic memory with temporal knowledge graphs means Forge gets smarter the more you use it. Works on macOS and Linux with cross-platform SQLite (better-sqlite3 + sqlite-vec for vector search).
 
 ### Multi-Source Research in Parallel
 
@@ -188,6 +188,8 @@ The setup script will:
 - Create symlink: `~/.claude` -> `~/Forge/.claude`
 - Configure `PAI_DIR` in settings.json for your machine
 - Install Bun (if not present)
+- Install Node.js (if not present, required for SemanticMemory on macOS)
+- Build native SQLite extension (`better-sqlite3` + `sqlite-vec`)
 - Add shell aliases to your `.bashrc` or `.zshrc`
 - Create `.env` from template
 
@@ -454,11 +456,13 @@ forge-push   # Save changes
 
 | Category | Choice |
 |----------|--------|
-| **Runtime** | Bun |
+| **Runtime** | Bun (hooks, tools) + Node.js/tsx (SemanticMemory) |
 | **Language** | TypeScript |
 | **Package Manager** | Bun |
 | **AI Platform** | Claude Code |
 | **Format** | Markdown |
+
+> **Why two runtimes?** Most Forge tools run on Bun for speed. SemanticMemory uses `better-sqlite3` (via `npx tsx`) because Bun's built-in SQLite cannot load native extensions (like sqlite-vec) on macOS. This ensures Forge works identically on macOS, Linux, and WSL.
 
 ---
 
