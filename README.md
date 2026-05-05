@@ -38,7 +38,7 @@ You <-> Claude Code <-> Forge Configuration <-> Claude AI
 
 | Component | What It Does |
 |-----------|-------------|
-| **Skills** | Self-contained AI capabilities with automatic trigger routing (120 included) |
+| **Skills** | Self-contained AI capabilities with automatic trigger routing (138 included) |
 | **Agents** | Specialized AI personalities — architect, engineer, security auditor, researcher |
 | **Hooks** | Event-driven TypeScript automation (session start/end, tool use, context compression) |
 | **History** | Automatic documentation system that captures sessions, learnings, and research |
@@ -57,9 +57,9 @@ Forge remembers your projects, preferences, decisions, and context between conve
 
 Launch research across 5+ AI models simultaneously — Claude, Gemini, Perplexity, Grok, and local Ollama. Each brings different strengths. Results are synthesized into a single, comprehensive analysis. One prompt, five perspectives.
 
-### 120 Skills with Auto-Activation
+### 138 Skills with Auto-Activation
 
-Say "research VitePress alternatives" and the Research skill activates automatically. Say "create a CLI tool" and CreateCLI takes over. No slash commands to memorize — skills route based on natural language triggers. Categories span security, development, business advisory, document processing, QA, and more.
+Say "research VitePress alternatives" and the Research skill activates automatically. Say "create a CLI tool" and CreateCLI takes over. No slash commands to memorize — skills route based on natural language triggers. Categories span security, AI red-teaming, compliance (15 GRC frameworks), development, business advisory, document processing, QA, and more.
 
 ### 20+ Specialized Agents
 
@@ -89,7 +89,11 @@ Every code change passes through **Nehemiah** (security auditor agent) before it
 
 ### Compliance Agents on Demand
 
-**Daniel** (compliance specialist) handles SOX, GDPR, HIPAA, PCI-DSS, and SOC 2 assessments. Need to verify your application meets regulatory requirements? Ask Daniel — he'll audit your codebase against the specific framework and produce actionable findings.
+**Daniel** (Chief Compliance Officer) covers **15 GRC frameworks** out of the box: ISO 27001, SOC 2, FedRAMP, GDPR, HIPAA, NIST CSF, PCI DSS, TSA Cybersecurity, ISO 27701, ISO 42001, DORA, DPDPA (India), CMMC 2.0, NIST AI RMF, and SWIFT CSP. Need to verify your application meets regulatory requirements? Ask Daniel — he invokes the matching framework skill and produces audit-grade findings benchmarked at 95% accuracy against the source standards.
+
+### AI Red-Teaming Built In
+
+**PyRIT skill** (Microsoft's open-source Python Risk Identification Tool) ships pre-wired into Forge for jailbreak testing, prompt injection scans, multi-turn attacks (Crescendo, TAP, Skeleton Key), and content-harm scoring against any LLM target — Claude, OpenAI, Azure, HuggingFace, Ollama. Used both offensively (Ehud's red-team engagements) and defensively (Daniel's NIST AI RMF MEASURE / ISO 42001 testing evidence).
 
 ### Offensive Security Testing
 
@@ -115,18 +119,42 @@ Critical configuration files are tracked in `.pai-protected.json` with automated
 | **RedTeam** | Adversarial analysis and attack simulation |
 | **pentest-workflow** | Structured penetration testing methodology |
 | **Ffuf** | Web fuzzing and directory discovery |
+| **Naabu** | Port scanning and service detection (ProjectDiscovery wrapper) |
 | **WazuhDashboard** | Real-time SIEM monitoring and alert triage |
 | **CSO** | Chief Security Officer strategic review |
-| **cso** | Security posture assessment |
 | **CybersecurityPlaybooks** | 24 ATT&CK-mapped offensive security playbooks — Kerberoasting, BloodHound, Sliver C2, Zerologon, DCSync, sqlmap, Nmap, Metasploit, and more |
+| **PyRIT** | AI/LLM red-teaming — jailbreaks, prompt injection, Crescendo, TAP, Skeleton Key (Microsoft AI Red Team) |
+| **PAIAudit** | Audits your own Forge config — settings, MCP servers, hooks, skill supply chain drift |
+
+### Compliance Skill Arsenal — 15 GRC Frameworks
+
+Daniel (CCO agent) maps every client request to the matching framework skill. Each carries article-cited guidance benchmarked at 95% accuracy against source standards.
+
+| Framework | Skill | Coverage |
+|-----------|-------|----------|
+| **ISO 27001** | `ISO27001` | ISMS, Annex A controls, Statement of Applicability, certification readiness |
+| **SOC 2** | `SOC2` | All five Trust Services Criteria (Security, Availability, Confidentiality, Processing Integrity, Privacy) |
+| **FedRAMP** | `FedRAMP` | Authority to Operate (ATO), NIST SP 800-53 controls, federal cloud security |
+| **GDPR** | `GDPRCompliance` | Privacy policies, DPAs, ROPAs, DSARs, breach notification, code audits |
+| **HIPAA** | `HIPAACompliance` | PHI/ePHI, covered entities, BAAs, healthcare-specific controls |
+| **NIST CSF** | `NISTCSF` | CSF 2.0 — Govern, Identify, Protect, Detect, Respond, Recover functions |
+| **PCI DSS** | `PCICompliance` | v4.0.1 CDE scoping, SAQ selection, QSA audit prep |
+| **TSA Cybersecurity** | `TSACompliance` | Pipeline/rail/transit Security Directives, CIP/COIP, ADR/CAP |
+| **ISO 27701** | `ISO27701` | Privacy Information Management System (PIMS) extension to ISO 27001 |
+| **ISO 42001** | `ISO42001` | AI Management System, AISIA (AI System Impact Assessment), responsible AI |
+| **DORA** | `DORA` | EU Digital Operational Resilience Act — ICT risk, TLPT, third-party register |
+| **DPDPA** | `DPDPA` | India Digital Personal Data Protection Act, 2023 — Data Fiduciary obligations |
+| **CMMC 2.0** | `CMMC` | DoD Cybersecurity Maturity Model — Levels 1/2/3, SSP, POA&M, SPRS scoring |
+| **NIST AI RMF** | `NISTAIRMF` | AI Risk Management — GOVERN, MAP, MEASURE, MANAGE functions |
+| **SWIFT CSP** | `SWIFTCSP` | Customer Security Programme CSCF v2025 — mandatory + advisory controls |
 
 ### Security Agent Roster
 
 | Agent | Role | Why It Matters |
 |-------|------|----------------|
 | **Nehemiah** | Security auditor | Catches OWASP vulnerabilities before they ship |
-| **Daniel** | Compliance specialist | Ensures regulatory frameworks are met |
-| **Ehud** | Penetration tester | Finds what scanners miss |
+| **Daniel** | Chief Compliance Officer | 15 GRC frameworks — ISO 27001, SOC 2, FedRAMP, GDPR, HIPAA, NIST CSF, PCI DSS, TSA, ISO 27701, ISO 42001, DORA, DPDPA, CMMC, NIST AI RMF, SWIFT CSP |
+| **Ehud** | Penetration tester | Finds what scanners miss — including AI red-teaming via PyRIT |
 | **Gideon** | Incident responder | Minimizes blast radius when things break |
 
 > **The difference:** Other AI tools help you write code faster. Forge helps you write code that's **secure by default** — with the same depth of security review that enterprises pay six figures for, built into your personal development workflow.
@@ -248,7 +276,9 @@ Skills are self-contained AI capability packages that activate automatically bas
 |----------|--------|
 | **Core** | CORE (identity/config), Fabric (248 AI patterns), Research (multi-source), Observability (real-time dashboard) |
 | **Privacy** | Private (route to local Ollama/Gemma4), OllamaResearcher (local AI research) |
-| **Security** | OSINT, RedTeam, pentest-workflow, Ffuf, WazuhDashboard, CSO, CybersecurityPlaybooks (24 ATT&CK-mapped offensive playbooks) |
+| **Security** | OSINT, RedTeam, pentest-workflow, Ffuf, Naabu, WazuhDashboard, CSO, CybersecurityPlaybooks (24 ATT&CK-mapped offensive playbooks), PAIAudit |
+| **AI Red-Team** | PyRIT (Microsoft Python Risk Identification Tool — jailbreaks, prompt injection, Crescendo/TAP/Skeleton Key, content-harm scoring) |
+| **Compliance** | ISO27001, SOC2, FedRAMP, GDPRCompliance, HIPAACompliance, NISTCSF, PCICompliance, TSACompliance, ISO27701, ISO42001, DPDPA, DORA, CMMC, NISTAIRMF, SWIFTCSP — 15 frameworks at 95% accuracy |
 | **Development** | DevTeam (multi-agent dev), CodingAgent, CreateCLI, test-driven-development |
 | **Web** | BrightData (4-tier scraping), browse (headless Playwright), connect-chrome |
 | **Business** | ceo-advisor, cto-advisor, cfo-advisor, AlexHormoziPitch, pricing, mvp, validate-idea |
@@ -557,8 +587,10 @@ If you haven't read Dan's [**The Real Internet of Things**](https://danielmiessl
 Dan is also the creator of [**Fabric**](https://github.com/danielmiessler/fabric) — the AI pattern framework with 248+ patterns that ships natively inside Forge. His work on making AI practical and accessible has shaped how thousands of people think about personal AI systems.
 
 **What Forge adds on top of PAI:**
-- 100+ skills (up from ~10) including 24 ATT&CK-mapped offensive security playbooks, 20+ specialized agents with distinct personalities
+- 138 skills (up from ~10) including 24 ATT&CK-mapped offensive security playbooks, 15 GRC compliance frameworks, AI red-teaming via PyRIT, and 20+ specialized agents with distinct personalities
 - Security-first development with mandatory audit gates (OWASP, SAST)
+- AI red-teaming pre-wired (Microsoft PyRIT) for jailbreak/prompt-injection testing of any LLM target
+- Compliance coverage at 95% accuracy across ISO 27001, SOC 2, FedRAMP, GDPR, HIPAA, NIST CSF, PCI DSS, TSA, ISO 27701, ISO 42001, DORA, DPDPA, CMMC 2.0, NIST AI RMF, SWIFT CSP
 - Real-time observability dashboard with WebSocket streaming
 - Privacy routing to local models (Ollama/Gemma4) for sensitive data
 - Multi-agent orchestration with parallel execution

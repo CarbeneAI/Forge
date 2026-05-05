@@ -198,7 +198,7 @@ fi
 # Step 7: Create local directories (not synced)
 # -------------------------------------------
 echo ""
-echo "[7/8] Creating local directories..."
+echo "[7/9] Creating local directories..."
 
 mkdir -p "$PAI_DIR/.claude/history/sessions"
 mkdir -p "$PAI_DIR/.claude/history/learnings"
@@ -206,10 +206,42 @@ mkdir -p "$PAI_DIR/.claude/history/raw-outputs"
 echo "  OK: Created history directories"
 
 # -------------------------------------------
-# Step 8: Verify setup
+# Step 8: Build PyRIT venv (for AI red-teaming skill)
 # -------------------------------------------
 echo ""
-echo "[8/8] Verifying setup..."
+echo "[8/9] Setting up PyRIT (AI red-teaming)..."
+
+PYRIT_DIR="$PAI_DIR/.claude/skills/PyRIT"
+if [ -d "$PYRIT_DIR" ]; then
+    if [ -d "$PYRIT_DIR/venv" ]; then
+        echo "  OK: PyRIT venv already exists"
+    else
+        # PyRIT requires Python 3.10-3.13 (not 3.14+)
+        if command -v uv &> /dev/null; then
+            echo "  Building PyRIT venv with uv (Python 3.13)..."
+            (cd "$PYRIT_DIR" && uv venv --python 3.13 venv && \
+              source venv/bin/activate && uv pip install pyrit) && \
+              echo "  OK: PyRIT installed (run: ~/.claude/skills/PyRIT/tools/run-pyrit.sh version)"
+        elif command -v python3.13 &> /dev/null; then
+            echo "  Building PyRIT venv with python3.13..."
+            (cd "$PYRIT_DIR" && python3.13 -m venv venv && \
+              source venv/bin/activate && pip install pyrit) && \
+              echo "  OK: PyRIT installed"
+        else
+            echo "  SKIP: uv or python3.13 not found. Install one and run:"
+            echo "    cd $PYRIT_DIR && uv venv --python 3.13 venv && \\"
+            echo "    source venv/bin/activate && uv pip install pyrit"
+        fi
+    fi
+else
+    echo "  SKIP: PyRIT skill not present"
+fi
+
+# -------------------------------------------
+# Step 9: Verify setup
+# -------------------------------------------
+echo ""
+echo "[9/9] Verifying setup..."
 echo ""
 
 # Check symlink
