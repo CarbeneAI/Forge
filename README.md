@@ -586,6 +586,8 @@ If you haven't read Dan's [**The Real Internet of Things**](https://danielmiessl
 
 Dan is also the creator of [**Fabric**](https://github.com/danielmiessler/fabric) — the AI pattern framework with 248+ patterns that ships natively inside Forge. His work on making AI practical and accessible has shaped how thousands of people think about personal AI systems.
 
+[**Jason Haddix**](https://www.bughuntermethodology.com/) is the other half of the lineage. His **Bug Hunter Methodology** is the offensive-security playbook that shaped how Forge's pentest-workflow, the CybersecurityPlaybooks skill (24 ATT&CK-mapped playbooks), and the companion Talon project think about reconnaissance, enumeration, and attack-path mapping. If Dan gave Forge its skeleton, Jason gave it its teeth. The modern offensive-security craft owes him a real debt — read the methodology, watch his talks, follow his work.
+
 **What Forge adds on top of PAI:**
 - 138 skills (up from ~10) including 24 ATT&CK-mapped offensive security playbooks, 15 GRC compliance frameworks, AI red-teaming via PyRIT, and 20+ specialized agents with distinct personalities
 - Security-first development with mandatory audit gates (OWASP, SAST)
@@ -597,7 +599,7 @@ Dan is also the creator of [**Fabric**](https://github.com/danielmiessler/fabric
 - Semantic memory with temporal knowledge graphs
 - C-suite advisory agents (CTO, CFO, CEO, COO, CMO, CISO)
 
-Built and maintained by [CarbeneAI](https://carbene.ai). Standing on the shoulders of Dan's original vision.
+Built and maintained by [CarbeneAI](https://carbene.ai). Standing on the shoulders of Dan's vision and Jason's methodology.
 
 ---
 
