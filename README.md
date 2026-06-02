@@ -24,6 +24,16 @@
 
 ---
 
+## About CarbeneAI
+
+Forge is one of four open-source proofs of concept published by CarbeneAI, alongside [Harbinger](https://github.com/CarbeneAI/Harbinger) (AI threat intel), [Specter](https://github.com/CarbeneAI/Specter) (AI-assisted SIEM), and [Talon](https://github.com/CarbeneAI/Talon) (AI-assisted offensive workflows). They are not the product. They exist so prospects can see CarbeneAI's founder, Clint P. Garrison, understands the end-to-end strategy of running an AI operations team across security, engineering, and ops infrastructure.
+
+CarbeneAI is a Fractional CTO + CISO + AI Strategy advisory practice for CEOs and Boards in risk-driven environments. Clint owns the strategy and risk seat at the client table; CarbeneAI's team and partner network deliver execution.
+
+Use this repo. Fork it. Improve it. For CarbeneAI advisory engagement: [carbene.ai](https://carbene.ai)
+
+---
+
 ## What is Forge?
 
 Forge is an open-source scaffolding system that transforms [Claude Code](https://claude.ai/code) into a personalized AI operations platform. It provides skills-based architecture, specialized agent personalities, event-driven automation, and automatic work capture — turning a generic AI assistant into one that knows your projects, preferences, and workflows.
