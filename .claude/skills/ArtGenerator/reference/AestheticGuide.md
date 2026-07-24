@@ -4,7 +4,7 @@ Complete visual design system for CarbeneAI brand identity, covering colors, typ
 
 ## Brand Identity
 
-**CarbeneAI** is a fractional CTO/CISO consulting firm specializing in technology strategy, security architecture, and executive leadership. The visual identity reflects:
+**CarbeneAI** is the parent brand over a set of open-source AI security tools (Talon, Specter, Harbinger, Forge, Distill) and a security training business (CyberDefenseTactics, PurpleTeamOps). Training is the product; the tools are the proof. Niche focus is public safety and defense. The visual identity reflects:
 
 - **Technical expertise** - Professional, precise, high-quality
 - **Innovation** - Futuristic, cutting-edge, forward-thinking

@@ -10,9 +10,9 @@ Security-first autonomous multi-agent software development team with hierarchica
 **Security Policy:** CarbeneAI is a "Security Built In, Not Bolted On" organization. All code produced by DevTeam undergoes mandatory security review by Nehemiah before merge. OWASP Top 10 compliance is required for all web-facing code.
 
 **Key Projects:**
-- **carbeneai** (carbene.ai) - Business consulting website
-- **cyberdefensetactics** (cyberdefensetactics.com) - Fractional CTO/CISO consulting site
-- **purpleteamops** - Security operations platform
+- **carbeneai** (carbene.ai) - Parent brand site: open-source tools + training
+- **cyberdefensetactics** (cyberdefensetactics.com) - Security training academy (the product)
+- **purpleteamops** (purpleteamops.app) - Hands-on lab + recurring membership
 
 ## Workflow Routing
 
