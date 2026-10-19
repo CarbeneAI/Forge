@@ -9,9 +9,7 @@ This is a contributor proposal for maintainer discussion, not an adopted release
 - Exercise the real scripts in disposable homes on Ubuntu and macOS, including special characters, reruns, and missing local settings.
 - Stop `pai-sync` and `pai-edit` at failed checkout, editor, pull, status, add,
   commit, or push operations while preserving the caller directory.
-- Run 45 offline tests: ten setup/navigation tests, five Git helper tests, ten credential-file tests, ten JSON settings tests, and ten diagnostic tests,
-  with Bash and Zsh subcases. Git/editor fixtures verify ordered failure handling
-  without real pushes or mutations to the user's home.
+- Run offline setup/navigation, Git helper, credential-file, JSON settings, and diagnostic tests, including partial optional PyRIT repair and Bash/Zsh subcases. Git/editor fixtures verify ordered failure handling without real pushes or mutations to the user's home.
 - Parse existing settings structurally, update only `env.PAI_DIR`, preserve unrelated parsed values and file mode, and reject malformed settings without rewriting them.
 - Make `pai-check` report required failures through its exit status, preserve the caller directory, and avoid loading credentials or running configured Git fsmonitor hooks. Settings and live services remain separate checks.
 - Align the README, Quick Start, and coding-agent checks with the shipped installer. Machine-local settings and hook registration remain separate setup responsibilities.
