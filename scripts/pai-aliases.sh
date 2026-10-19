@@ -126,10 +126,28 @@ pai-agents() {
 
 # Create a new skill from template
 pai-new-skill() {
-    if [ -z "$1" ]; then
-        echo "Usage: pai-new-skill <SkillName>"
-        return 1
+    # Keep the bracket ranges ASCII in Bash and Zsh under every user locale.
+    local LC_ALL=C
+
+    if [ "$#" -ne 1 ]; then
+        echo "Usage: pai-new-skill <name>"
+        return 2
     fi
+
+    case "$1" in
+        [A-Za-z0-9]*)
+            case "$1" in
+                *[!A-Za-z0-9._-]*)
+                    echo "Error: skill name must be one path component using letters, numbers, '.', '_' or '-'."
+                    return 2
+                    ;;
+            esac
+            ;;
+        *)
+            echo "Error: skill name must start with a letter or number."
+            return 2
+            ;;
+    esac
 
     local skill_name="$1"
     local skill_dir="$HOME/PAI/.claude/skills/$skill_name"

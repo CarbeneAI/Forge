@@ -316,6 +316,8 @@ skills/SkillName/
 └── tools/                # CLI utilities (TitleCase.ts)
 ```
 
+The `pai-new-skill` helper accepts one safe name component. See the [skill naming rules](docs/skill-creation.md).
+
 ### Skill Activation
 
 Skills activate via natural language — no slash commands needed:
