@@ -212,36 +212,77 @@ pai-test() {
     bun "$FORGE_REPO_DIR/.claude/hooks/self-test.ts"
 }
 
-# Check PAI configuration
-pai-check() {
+# Check setup without sourcing credentials, invoking hooks, or changing the caller.
+pai-check() (
+    local check_failed=0
+    local bun_version
     echo "PAI Configuration Check"
     echo "======================="
     echo ""
-    echo "PAI Directory: $FORGE_REPO_DIR"
-    [ -d "$FORGE_REPO_DIR" ] && echo "  [OK] Directory exists" || echo "  [FAIL] Directory missing!"
+    printf 'PAI Directory: %s\n' "$FORGE_REPO_DIR"
+    if [ -d "$FORGE_REPO_DIR" ]; then
+        echo "  [OK] Directory exists"
+    else
+        echo "  [FAIL] Directory missing!"
+        check_failed=1
+    fi
+    if [ -d "$FORGE_REPO_DIR/.claude" ]; then
+        echo "  [OK] Checkout configuration directory exists"
+    else
+        echo "  [FAIL] Checkout .claude directory missing!"
+        check_failed=1
+    fi
 
     echo ""
     echo ".claude symlink:"
     if [ -L "$HOME/.claude" ]; then
-        echo "  [OK] ~/.claude -> $(readlink "$HOME/.claude")"
+        # Compare the resolved directory, accepting relative links and path aliases.
+        if [ -d "$HOME/.claude" ] && [ "$HOME/.claude" -ef "$FORGE_REPO_DIR/.claude" ]; then
+            echo "  [OK] ~/.claude points to this checkout's configuration"
+        else
+            echo "  [FAIL] ~/.claude is broken or points to another configuration"
+            check_failed=1
+        fi
     elif [ -d "$HOME/.claude" ]; then
-        echo "  [WARN] ~/.claude is a directory, not a symlink"
+        echo "  [WARN] ~/.claude is a directory, not a symlink; its configuration may differ"
     else
         echo "  [FAIL] ~/.claude does not exist!"
+        check_failed=1
     fi
 
     echo ""
     echo "Git Status:"
-    cd "$FORGE_REPO_DIR" && git status --short
+    # Avoid index refresh writes and configured fsmonitor hook execution.
+    if [ -d "$FORGE_REPO_DIR" ]; then
+        if ! git --no-optional-locks -c core.fsmonitor=false -C "$FORGE_REPO_DIR" status --short; then
+            echo "  [FAIL] Cannot read Git status"
+            check_failed=1
+        fi
+    else
+        echo "  [FAIL] Git status unavailable without the checkout"
+    fi
 
     echo ""
     echo "Environment:"
-    [ -f "$FORGE_REPO_DIR/.claude/.env" ] && echo "  [OK] .env file exists" || echo "  [WARN] .env file missing!"
+    if [ -f "$FORGE_REPO_DIR/.claude/.env" ]; then
+        echo "  [OK] .env file exists; contents were not loaded or validated"
+    else
+        echo "  [WARN] Optional .env file missing"
+    fi
 
     echo ""
     echo "Bun:"
-    command -v bun &> /dev/null && echo "  [OK] bun installed: $(bun --version)" || echo "  [FAIL] bun not installed!"
-}
+    if ! command -v bun >/dev/null 2>&1; then
+        echo "  [FAIL] bun not installed!"
+        check_failed=1
+    elif bun_version=$(bun --version); then
+        printf '  [OK] bun installed: %s\n' "$bun_version"
+    else
+        echo "  [FAIL] bun --version failed"
+        check_failed=1
+    fi
+    return "$check_failed"
+)
 
 # -------------------------------------------
 # Conflict Resolution

@@ -71,10 +71,20 @@ For Zsh, use `source "$HOME/.zshrc"`. The existing public shell commands use the
 |---------|---------|
 | `pai` | Navigate to the checkout. |
 | `paic` | Navigate to its `.claude` directory. |
-| `pai-check` | Show the checkout, symlink, Git status, environment file, and Bun checks. |
+| `pai-check` | Read-only setup checks with a nonzero exit status for required failures. |
 | `pai-skills` | List installed skill directories. |
 | `pai-agents` | List agent configuration files. |
 | `pai-test` | Optional broader runtime diagnostic, including an optional local voice service probe. |
+
+`pai-check` preserves the caller's directory and reports all detected failures.
+Missing checkout/configuration directories, broken or foreign `~/.claude`
+symlinks, failed Git status, and missing or failing Bun commands return nonzero.
+Relative links to this checkout are accepted. A regular `~/.claude` directory
+warns that its configuration may differ; a missing optional `.env` also warns.
+These warnings alone do not fail the check. Git status disables optional index
+refresh and configured fsmonitor hooks. Environment files are never sourced or
+printed. This diagnostic does not validate settings contents, hook registration,
+Claude authentication, or live service health.
 
 `pai-test` requires configured settings and additional runtime features. It is separate from the isolated installer fixtures used by CI.
 
@@ -126,13 +136,17 @@ zsh -n scripts/pai-aliases.sh
 python3 -m unittest discover -s tests -v
 ```
 
-The 35 tests require Bash, Zsh, Python 3, and Bun (CI pins Bun 1.3.14).
+The 45 tests require Bash, Zsh, Python 3, Git, and Bun (CI pins Bun 1.3.14).
 Ten exercise private credential creation, preservation, races, failures, and
 ignore rules. Ten exercise setup/navigation, five exercise Git helper behavior,
-and ten exercise the JSON helper's parsing, preservation, permissions, and I/O
-failures. Settings fixtures invoke the real local Bun helper; network, package
-installation, Git, and editor operations are stubbed as appropriate. No real
-Git push is invoked. Fixtures copy scripts into disposable checkouts and set
+ten exercise the JSON helper's parsing, preservation, permissions, and I/O
+failures, and ten exercise setup diagnostics. The diagnostic fixtures cover both
+shells, required failures, warning-only states, and preserved caller directories.
+A disposable Git repository verifies unchanged index content and modification
+time and that a configured fsmonitor hook is not executed. Settings fixtures
+invoke the real local Bun helper; network, package installation, mutation-oriented
+Git helpers, and editor operations are stubbed as appropriate. No real Git push
+is invoked. Fixtures copy scripts into disposable checkouts and set
 `HOME` only in child processes. They do not install skill dependencies or call
 live services. CI runs these checks on Ubuntu and macOS; this does not validate
 every skill's dependencies or a full WSL installation.

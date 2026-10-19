@@ -9,10 +9,11 @@ This is a contributor proposal for maintainer discussion, not an adopted release
 - Exercise the real scripts in disposable homes on Ubuntu and macOS, including special characters, reruns, and missing local settings.
 - Stop `pai-sync` and `pai-edit` at failed checkout, editor, pull, status, add,
   commit, or push operations while preserving the caller directory.
-- Run 35 offline tests: ten setup/navigation tests, five Git helper tests, ten credential-file tests, and ten JSON settings tests,
+- Run 45 offline tests: ten setup/navigation tests, five Git helper tests, ten credential-file tests, ten JSON settings tests, and ten diagnostic tests,
   with Bash and Zsh subcases. Git/editor fixtures verify ordered failure handling
   without real pushes or mutations to the user's home.
 - Parse existing settings structurally, update only `env.PAI_DIR`, preserve unrelated parsed values and file mode, and reject malformed settings without rewriting them.
+- Make `pai-check` report required failures through its exit status, preserve the caller directory, and avoid loading credentials or running configured Git fsmonitor hooks. Settings and live services remain separate checks.
 - Align the README, Quick Start, and coding-agent checks with the shipped installer. Machine-local settings and hook registration remain separate setup responsibilities.
 
 These checks do not validate every skill, install the full runtime, or establish WSL compatibility. See [Quick Start](docs/QUICKSTART.md) and [setup CI](.github/workflows/setup-tests.yml) for the current checks.
@@ -21,7 +22,7 @@ These checks do not validate every skill, install the full runtime, or establish
 
 Problem: a fresh clone does not contain `.claude/settings.json`, and users must determine which hooks and permissions to configure.
 
-Proposed approach: agree on a minimal, documented settings template and add a read-only configuration diagnostic before automating more setup.
+Proposed approach: agree on a minimal, documented settings template and extend the read-only setup diagnostic to validate settings before automating more setup.
 
 Acceptance criteria:
 

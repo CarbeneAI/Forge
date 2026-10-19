@@ -243,7 +243,7 @@ claude
 **Verify:**
 
 ```bash
-pai-check    # Verify configuration
+pai-check    # Read-only setup checks; nonzero when a required check fails
 pai-test     # Optional broader diagnostic; also probes a local voice service
 ```
 
@@ -258,11 +258,19 @@ pai-test     # Optional broader diagnostic; also probes a local voice service
 | `pai-pull` | Pull latest from GitHub |
 | `pai-push` | Commit and push all changes |
 | `pai-sync` | Pull, then commit and push local changes if present |
-| `pai-check` | Verify configuration |
+| `pai-check` | Check setup and return nonzero on required failures |
 | `pai-test` | Optional broader runtime diagnostic |
 | `pai-skills` | List all skills |
 | `pai-agents` | List all agents |
 | `pai-new-skill <name>` | Create new skill from template |
+
+`pai-check` checks the checkout, configuration directory, runtime symlink, Git
+status, and Bun command. It returns nonzero for missing required paths, a broken
+or foreign symlink, failed Git status, or a missing/failing Bun executable while
+preserving the caller's directory. A regular `~/.claude` directory and a missing
+optional `.env` produce warnings. It neither loads credentials nor validates
+settings, hook registration, or service health. Git's optional index refresh and
+configured fsmonitor hook are disabled for this diagnostic.
 
 `pai-sync` and `pai-edit` stop when the checkout, editor, or a Git operation
 fails and return that failure status. They preserve the caller's working

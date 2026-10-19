@@ -20,7 +20,7 @@ This file provides guidance to Claude Code when working in this repository.
 ```
 ~/Forge/
 ├── .claude/
-│   ├── settings.json          # Configuration (PAI_DIR, DA name, env vars)
+│   ├── settings.json          # Machine-local configuration, absent from a fresh clone
 │   ├── .env                   # API keys (never committed)
 │   ├── hooks/                 # Event-driven automation (TypeScript)
 │   │   ├── initialize-session.ts
@@ -52,15 +52,15 @@ This file provides guidance to Claude Code when working in this repository.
 # Initial setup on new machine
 bash ~/Forge/scripts/setup-new-machine.sh
 
-# Verify configuration
-forge-check
+# Check setup; required failures return nonzero
+pai-check
 
-# Run health check
-forge-test
+# Optional broader diagnostic; may contact a local voice service
+pai-test
 
 # List all skills / agents
-forge-skills
-forge-agents
+pai-skills
+pai-agents
 ```
 
 ## Architecture Principles
@@ -140,13 +140,13 @@ Event-driven TypeScript automation executed via Bun:
 }
 ```
 
-- `PAI_DIR` — Absolute path to `.claude` directory (machine-specific, auto-configured by setup script)
+- `PAI_DIR`: absolute runtime configuration path. Setup updates only an existing `env.PAI_DIR` string; it does not create settings or register hooks.
 - `DA` — Digital Assistant name
 - `CLAUDE_CODE_MAX_OUTPUT_TOKENS` — Max response length
 
 ### API Keys (.env)
 
-All API keys go in `~/.claude/.env` (gitignored). See `.env.example` for the full list.
+All API keys go in `~/.claude/.env` (gitignored). See [the environment template](.claude/.env.example) for available settings.
 
 ## File Naming Conventions
 
@@ -186,7 +186,7 @@ COMPLETED: [12 words max]
 ## Creating a New Skill
 
 ```bash
-forge-new-skill MySkill
+pai-new-skill MySkill
 # Or: "Create a new skill for [purpose]"
 ```
 
@@ -212,13 +212,18 @@ source ~/.bashrc
 
 Run `bash -n scripts/setup-new-machine.sh`, `bash -n scripts/pai-aliases.sh`,
 `zsh -n scripts/pai-aliases.sh`, and `python3 -B -m unittest discover -s tests -v`.
-The 35 tests require Bash, Zsh, Python 3, and Bun (CI pins 1.3.14). They use
+The 45 tests require Bash, Zsh, Python 3, Git, and Bun (CI pins 1.3.14). They use
 disposable homes and fake external commands, including ten credential-file
-checks and ten JSON helper checks. Settings fixtures run the real local Bun
-helper, with no hooks or external requests. Preserve only the documented
+checks, ten JSON helper checks, and ten setup diagnostic checks. Settings fixtures
+run the real local Bun helper, with no hooks or external requests. Preserve only the documented
 `env.PAI_DIR` mutation, private staging, failure reporting, and ordinary file
 permissions; never print configuration contents. Git helper checks
-never invoke a real push. `pai-sync` and `pai-edit` return the first failure and
-preserve the caller directory. A failed operation does not roll back earlier
+never invoke a real push. One diagnostic fixture uses a disposable real Git
+repository to verify the index is unchanged and fsmonitor hooks do not run.
+`pai-check` preserves the caller directory, returns nonzero for required failures,
+and treats a regular runtime directory or missing optional environment file as
+warnings. It does not load credentials or validate settings, hooks, or services.
+`pai-sync` and `pai-edit` return the first failure and preserve the caller
+directory. A failed operation does not roll back earlier
 successful edits or Git changes. These fixtures do not validate live services,
 full skill dependencies, or WSL. See `docs/QUICKSTART.md` for setup limits.
