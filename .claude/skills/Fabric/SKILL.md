@@ -12,7 +12,7 @@ description: Native Fabric pattern execution for Claude Code. USE WHEN processin
 - **Your Claude subscription's full power** - Opus/Sonnet intelligence, not Fabric's default model
 - **Full conversation context** - Patterns work with your entire session
 - **No CLI overhead** - Faster execution, no process spawning
-- **Same 248 patterns** - All the patterns you know, just applied natively
+- **234 tracked native pattern files** - Applied from this checkout's `tools/patterns/` directory
 
 ## When to Use Native Patterns (Default)
 
@@ -51,7 +51,7 @@ Only use the `fabric` command for operations that require external services:
 
 **For everything else, use native patterns.**
 
-## Pattern Categories (248 Total)
+## Selected Pattern Categories
 
 ### Threat Modeling & Security
 - `create_threat_model` - General threat modeling
@@ -126,7 +126,7 @@ Each pattern directory contains:
 | Speed | Instant (no process spawn) | ~1-2s CLI overhead |
 | Integration | Seamless with Claude Code | External tool call |
 
-**The patterns are identical.** The difference is execution context and model power.
+The native prompts come from this checkout's `tools/patterns/` directory. That inventory can differ from the vendored `fabric-repo` snapshot or an independently updated Fabric CLI; inspect the selected prompt before comparing results.
 
 ## Full Pattern List
 

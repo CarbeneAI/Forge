@@ -20,7 +20,7 @@ This file provides guidance to Claude Code when working in this repository.
 ```
 ~/Forge/
 ├── .claude/
-│   ├── settings.json          # Configuration (PAI_DIR, DA name, env vars)
+│   ├── settings.json          # Machine-local configuration, absent from a fresh clone
 │   ├── .env                   # API keys (never committed)
 │   ├── hooks/                 # Event-driven automation (TypeScript)
 │   │   ├── initialize-session.ts
@@ -28,9 +28,9 @@ This file provides guidance to Claude Code when working in this repository.
 │   │   ├── capture-tool-output.ts
 │   │   ├── stop-hook.ts
 │   │   └── lib/pai-paths.ts   # Centralized path resolution
-│   ├── skills/                # 120 domain-specific capabilities
+│   ├── skills/                # 128 tracked skill definitions
 │   │   ├── CORE/              # Identity, architecture, principles
-│   │   ├── Fabric/            # 248 native AI patterns
+│   │   ├── Fabric/            # 234 native pattern files
 │   │   ├── Research/          # Multi-source research workflows
 │   │   ├── Private/           # Local Ollama privacy routing
 │   │   ├── Observability/     # Real-time agent monitoring dashboard
@@ -52,15 +52,15 @@ This file provides guidance to Claude Code when working in this repository.
 # Initial setup on new machine
 bash ~/Forge/scripts/setup-new-machine.sh
 
-# Verify configuration
-forge-check
+# Check setup; required failures return nonzero
+pai-check
 
-# Run health check
-forge-test
+# Optional broader diagnostic; may contact a local voice service
+pai-test
 
 # List all skills / agents
-forge-skills
-forge-agents
+pai-skills
+pai-agents
 ```
 
 ## Architecture Principles
@@ -90,7 +90,7 @@ skills/SkillName/
 
 | Category | Skills |
 |----------|--------|
-| **Core** | CORE, Fabric (248 patterns), Research, Observability |
+| **Core** | CORE, Fabric (234 native pattern files), Research, Observability |
 | **Security** | OSINT, RedTeam, pentest-workflow, Ffuf, WazuhDashboard, CSO, CybersecurityPlaybooks (24 ATT&CK playbooks) |
 | **Development** | DevTeam, CodingAgent, CreateCLI, test-driven-development |
 | **Business** | ceo-advisor, cto-advisor, cfo-advisor, pricing, mvp, validate-idea |
@@ -140,13 +140,13 @@ Event-driven TypeScript automation executed via Bun:
 }
 ```
 
-- `PAI_DIR` — Absolute path to `.claude` directory (machine-specific, auto-configured by setup script)
+- `PAI_DIR`: absolute runtime configuration path. Setup updates only an existing `env.PAI_DIR` string; it does not create settings or register hooks.
 - `DA` — Digital Assistant name
 - `CLAUDE_CODE_MAX_OUTPUT_TOKENS` — Max response length
 
 ### API Keys (.env)
 
-All API keys go in `~/.claude/.env` (gitignored). See `.env.example` for the full list.
+All API keys go in `~/.claude/.env` (gitignored). See [the environment template](.claude/.env.example) for available settings.
 
 ## File Naming Conventions
 
@@ -173,7 +173,7 @@ COMPLETED: [12 words max]
 
 ## Fabric Patterns
 
-248+ patterns run **natively** within Claude Code (no CLI spawning). Only use `fabric` CLI for YouTube transcripts (`-y`) or pattern updates (`-U`).
+The 234 tracked native pattern files can be read into Claude Code context without invoking the Fabric CLI. See [the repository inventory](docs/REPOSITORY-INVENTORY.md) for the counting rule; this is a file inventory, not validation of every pattern. Only use `fabric` CLI for YouTube transcripts (`-y`) or pattern updates (`-U`).
 
 ## Security Protocols
 
@@ -181,12 +181,12 @@ COMPLETED: [12 words max]
 2. `.env` is gitignored by default
 3. Rotate API keys regularly
 4. Use minimum required permissions for each API key
-5. All code changes pass through Nehemiah (security auditor) in DevTeam workflow
+5. DevTeam instructs contributors to involve Nehemiah for security review. This is workflow guidance; configure repository checks and machine-local hooks separately to enforce review gates.
 
 ## Creating a New Skill
 
 ```bash
-forge-new-skill MySkill
+pai-new-skill MySkill
 # Or: "Create a new skill for [purpose]"
 ```
 
@@ -207,3 +207,24 @@ If `bun` or `claude` commands aren't found after setup:
 ```bash
 source ~/.bashrc
 ```
+
+## Offline shell development checks
+
+Run `bash -n scripts/setup-new-machine.sh`, `bash -n scripts/pai-aliases.sh`,
+`zsh -n scripts/pai-aliases.sh`, and `python3 -B -m unittest discover -s tests -v`.
+The suite requires Bash, Zsh, Python 3, Git, and Bun (CI pins 1.3.14). It uses
+disposable homes and fake external commands to check credential files,
+setup/navigation and PyRIT retries, Git helpers, JSON settings, and setup diagnostics.
+The command reports the current test count. Settings fixtures
+run the real local Bun helper, with no hooks or external requests. Preserve only the documented
+`env.PAI_DIR` mutation, private staging, failure reporting, and ordinary file
+permissions; never print configuration contents. Git helper checks
+never invoke a real push. One diagnostic fixture uses a disposable real Git
+repository to verify the index is unchanged and fsmonitor hooks do not run.
+`pai-check` preserves the caller directory, returns nonzero for required failures,
+and treats a regular runtime directory or missing optional environment file as
+warnings. It does not load credentials or validate settings, hooks, or services.
+`pai-sync` and `pai-edit` return the first failure and preserve the caller
+directory. A failed operation does not roll back earlier
+successful edits or Git changes. These fixtures do not validate live services,
+full skill dependencies, or WSL. See `docs/QUICKSTART.md` for setup limits.
