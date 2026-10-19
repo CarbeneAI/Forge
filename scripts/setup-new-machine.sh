@@ -109,16 +109,34 @@ echo "[4/8] Setting up environment file..."
 ENV_FILE="$FORGE_REPO_DIR/.claude/.env"
 ENV_EXAMPLE="$FORGE_REPO_DIR/.claude/.env.example"
 
-if [ -f "$ENV_FILE" ]; then
+if [ -L "$ENV_FILE" ]; then
+    echo "ERROR: .env destination must be a regular file, not a symlink" >&2
+    exit 1
+elif [ -e "$ENV_FILE" ]; then
+    if [ ! -f "$ENV_FILE" ]; then
+        echo "ERROR: .env destination exists but is not a regular file" >&2
+        exit 1
+    fi
     echo "  OK: .env file already exists"
 else
+    # Build privately beside the destination, then link it into place. mktemp
+    # creates mode 600 under umask 077, and link fails atomically if another path
+    # appears at ENV_FILE, including a symlink or directory. This never follows it.
+    if ! ENV_TEMP=$(umask 077 && mktemp "$ENV_FILE.tmp.XXXXXX"); then
+        echo "ERROR: Could not create a private temporary .env file" >&2
+        exit 1
+    fi
+
     if [ -f "$ENV_EXAMPLE" ]; then
-        cp "$ENV_EXAMPLE" "$ENV_FILE"
-        echo "  Created .env from template"
-        echo "  IMPORTANT: Edit $ENV_FILE to add your API keys"
+        ENV_SOURCE="template"
+        if ! cat "$ENV_EXAMPLE" > "$ENV_TEMP"; then
+            rm -f "$ENV_TEMP" || true
+            echo "ERROR: Could not copy the .env template" >&2
+            exit 1
+        fi
     else
-        echo "  WARNING: No .env.example found, creating minimal .env"
-        cat > "$ENV_FILE" << 'EOF'
+        ENV_SOURCE="minimal"
+        if ! cat > "$ENV_TEMP" << 'EOF'
 # PAI Environment Variables
 # Add your API keys here
 
@@ -126,8 +144,29 @@ else
 # PERPLEXITY_API_KEY=your_key_here
 # GOOGLE_API_KEY=your_key_here
 EOF
-        echo "  IMPORTANT: Edit $ENV_FILE to add your API keys"
+        then
+            rm -f "$ENV_TEMP" || true
+            echo "ERROR: Could not write the minimal .env template" >&2
+            exit 1
+        fi
     fi
+
+    if ! link "$ENV_TEMP" "$ENV_FILE"; then
+        rm -f "$ENV_TEMP" || true
+        echo "ERROR: Could not create .env safely; check its parent directory and destination" >&2
+        exit 1
+    fi
+    if ! rm -f "$ENV_TEMP"; then
+        echo "ERROR: .env was created, but its temporary name could not be removed" >&2
+        exit 1
+    fi
+
+    if [ "$ENV_SOURCE" = "template" ]; then
+        echo "  Created .env from template"
+    else
+        echo "  WARNING: No .env.example found, created a minimal .env"
+    fi
+    echo "  IMPORTANT: Edit $ENV_FILE to add your API keys"
 fi
 
 # -------------------------------------------

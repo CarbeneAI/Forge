@@ -11,6 +11,7 @@
 *.env
 .claude/.env
 .claude/.env.local
+/.claude/.env.tmp.*
 *.pem
 *.key
 *.cert

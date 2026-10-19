@@ -535,7 +535,9 @@ All core docs live in `.claude/skills/CORE/`:
 
 ### API Keys (.env)
 
-All API keys go in `~/.claude/.env` (gitignored). The installer creates it from `.env.example` when missing and preserves an existing file. Keep credentials out of commits.
+All API keys go in `~/.claude/.env` (gitignored). Setup creates a missing file from `.env.example`, or a minimal template, with owner-only read and write permissions even under a permissive shell umask. Keep credentials out of commits.
+
+Existing regular files keep their contents and permissions. Check an existing `.env` before adding credentials; use `chmod 600 ~/.claude/.env` when it should be private. Setup rejects symlink and non-regular `.env` destinations instead of following or replacing them. Private temporary names are ignored as well, including leftovers from an interrupted setup.
 
 **Claude Code authentication:**
 Authenticate Claude Code separately. The keys below enable optional integrations.
