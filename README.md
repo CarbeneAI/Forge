@@ -212,7 +212,7 @@ The setup script will:
 - Use Bun to update an existing `env.PAI_DIR` string in `settings.json` to `~/.claude`'s absolute path.
 - Add a source line for `scripts/pai-aliases.sh` to `.zshrc` if present, otherwise `.bashrc`.
 - Create `.env` from its template if no `.env` exists, and create local history directories.
-- Create a PyRIT virtual environment if its skill is present and `uv` or Python 3.13 is available.
+- Check for PyRIT in its virtual environment; if setup is incomplete, retry the package install when `uv` or Python 3.13 is available and warn if it still fails.
 
 Rerunning preserves an existing `.env`, reuses the configured symlink, and avoids adding a duplicate alias source line. Existing lines mentioning `pai-aliases.sh` are kept; update that line manually if you move the checkout. `FORGE_REPO_DIR` identifies the checkout for shell helpers, while `PAI_DIR` remains the runtime configuration path at `~/.claude`.
 

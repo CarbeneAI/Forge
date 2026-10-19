@@ -239,25 +239,64 @@ echo "[8/9] Setting up PyRIT (AI red-teaming)..."
 
 PYRIT_DIR="$FORGE_REPO_DIR/.claude/skills/PyRIT"
 if [ -d "$PYRIT_DIR" ]; then
-    if [ -d "$PYRIT_DIR/venv" ]; then
-        echo "  OK: PyRIT venv already exists"
-    else
-        # PyRIT requires Python 3.10-3.13 (not 3.14+)
-        if command -v uv &> /dev/null; then
-            echo "  Building PyRIT venv with uv (Python 3.13)..."
-            (cd "$PYRIT_DIR" && uv venv --python 3.13 venv && \
-              source venv/bin/activate && uv pip install pyrit) && \
-              echo "  OK: PyRIT installed (run: ~/.claude/skills/PyRIT/tools/run-pyrit.sh version)"
-        elif command -v python3.13 &> /dev/null; then
-            echo "  Building PyRIT venv with python3.13..."
-            (cd "$PYRIT_DIR" && python3.13 -m venv venv && \
-              source venv/bin/activate && pip install pyrit) && \
-              echo "  OK: PyRIT installed"
-        else
-            echo "  SKIP: uv or python3.13 not found. Install one and run:"
-            echo "    cd $PYRIT_DIR && uv venv --python 3.13 venv && \\"
-            echo "    source venv/bin/activate && uv pip install pyrit"
+    # A directory alone can be left behind by an interrupted package install.
+    # Read package metadata without importing or running PyRIT itself.
+    pyrit_is_installed() {
+        local pyrit_python="$PYRIT_DIR/venv/bin/python"
+        [ -x "$pyrit_python" ] || return 1
+        "$pyrit_python" -I -c \
+            'from importlib.metadata import version; version("pyrit")' \
+            > /dev/null 2>&1
+    }
+
+    pyrit_install_with_uv() {
+        if [ ! -d "$PYRIT_DIR/venv" ]; then
+            (cd "$PYRIT_DIR" && uv venv --python 3.13 venv) || return 1
         fi
+        local pyrit_python="$PYRIT_DIR/venv/bin/python"
+        [ -x "$pyrit_python" ] || return 1
+        (cd "$PYRIT_DIR" && uv pip install --python "$pyrit_python" pyrit) || return 1
+        pyrit_is_installed
+    }
+
+    pyrit_install_with_python() {
+        if [ ! -d "$PYRIT_DIR/venv" ]; then
+            (cd "$PYRIT_DIR" && python3.13 -m venv venv) || return 1
+        fi
+        local pyrit_python="$PYRIT_DIR/venv/bin/python"
+        [ -x "$pyrit_python" ] || return 1
+        "$pyrit_python" -I -m pip install pyrit || return 1
+        pyrit_is_installed
+    }
+
+    if pyrit_is_installed; then
+        echo "  OK: PyRIT package is installed in its virtual environment"
+    elif command -v uv > /dev/null 2>&1; then
+        if [ -d "$PYRIT_DIR/venv" ]; then
+            echo "  Existing PyRIT environment is incomplete; retrying package install..."
+        else
+            echo "  Building PyRIT venv with uv (Python 3.13)..."
+        fi
+        if pyrit_install_with_uv; then
+            echo "  OK: PyRIT installed (run: ~/.claude/skills/PyRIT/tools/run-pyrit.sh version)"
+        else
+            echo "  WARNING: PyRIT setup did not complete. Setup will continue; inspect the error and rerun this installer." >&2
+        fi
+    elif command -v python3.13 > /dev/null 2>&1; then
+        if [ -d "$PYRIT_DIR/venv" ]; then
+            echo "  Existing PyRIT environment is incomplete; retrying package install..."
+        else
+            echo "  Building PyRIT venv with python3.13..."
+        fi
+        if pyrit_install_with_python; then
+            echo "  OK: PyRIT installed"
+        else
+            echo "  WARNING: PyRIT setup did not complete. Setup will continue; inspect the error and rerun this installer." >&2
+        fi
+    elif [ -d "$PYRIT_DIR/venv" ]; then
+        echo "  WARNING: Existing PyRIT environment is incomplete, and neither uv nor python3.13 is available. Install one and rerun setup." >&2
+    else
+        echo "  SKIP: uv or python3.13 not found. Install one to set up the PyRIT skill."
     fi
 else
     echo "  SKIP: PyRIT skill not present"

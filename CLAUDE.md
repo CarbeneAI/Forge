@@ -212,9 +212,10 @@ source ~/.bashrc
 
 Run `bash -n scripts/setup-new-machine.sh`, `bash -n scripts/pai-aliases.sh`,
 `zsh -n scripts/pai-aliases.sh`, and `python3 -B -m unittest discover -s tests -v`.
-The 45 tests require Bash, Zsh, Python 3, Git, and Bun (CI pins 1.3.14). They use
+The 48 tests require Bash, Zsh, Python 3, Git, and Bun (CI pins 1.3.14). They use
 disposable homes and fake external commands, including ten credential-file
-checks, ten JSON helper checks, and ten setup diagnostic checks. Settings fixtures
+checks, thirteen setup/navigation and PyRIT retry checks, ten JSON helper checks,
+and ten setup diagnostic checks. Settings fixtures
 run the real local Bun helper, with no hooks or external requests. Preserve only the documented
 `env.PAI_DIR` mutation, private staging, failure reporting, and ordinary file
 permissions; never print configuration contents. Git helper checks

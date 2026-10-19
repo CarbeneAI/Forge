@@ -32,7 +32,7 @@ The script finds the checkout from its own file location, so the current working
 | Bun | Reuses an installed executable, or attempts installation through Homebrew on macOS when available, otherwise through the Bun installer. |
 | Shell configuration | Adds a safely quoted source line for `scripts/pai-aliases.sh` to an existing `.zshrc`, otherwise `.bashrc`. Keeps any existing line mentioning `pai-aliases.sh`. |
 | Local history | Creates `history/sessions`, `history/learnings`, and `history/raw-outputs` inside the checkout's `.claude`. |
-| PyRIT | Keeps an existing virtual environment. If the skill is present without one, attempts setup using `uv` or Python 3.13; otherwise reports a skip. |
+| PyRIT | Checks for installed PyRIT distribution metadata in its virtual environment. If missing, tries setup or retries installation using `uv` or Python 3.13. A failed optional install warns and continues; missing prerequisites are reported as a skip. |
 
 The script does not install Node.js or build SemanticMemory's native SQLite dependencies. Individual skills may require additional runtimes, packages, credentials, or services. The installer does not run the separate interactive setup wizard.
 
@@ -50,7 +50,7 @@ The installer is not transactional: a later settings error does not undo an earl
 
 ### Rerun or move a checkout
 
-Run the same installer command to refresh setup. A correctly configured symlink and an existing `.env` are reused, and shell source lines are not duplicated. If setup backs up a previous `~/.claude` directory, inspect the reported backup path for files to migrate.
+Run the same installer command to refresh setup. A correctly configured symlink and an existing `.env` are reused, and shell source lines are not duplicated. If an earlier PyRIT install left a usable virtual environment without the package, setup retries the package install. If the environment itself is incomplete, inspect and repair it before rerunning. A failed optional PyRIT setup warns and does not stop the rest of setup. If setup backs up a previous `~/.claude` directory, inspect the reported backup path for files to migrate.
 
 If you move the checkout, rerun the installer from its new location and edit the existing `pai-aliases.sh` source line in your shell configuration to use the new path. Setup preserves existing source lines rather than rewriting them.
 
@@ -136,9 +136,10 @@ zsh -n scripts/pai-aliases.sh
 python3 -m unittest discover -s tests -v
 ```
 
-The 45 tests require Bash, Zsh, Python 3, Git, and Bun (CI pins Bun 1.3.14).
+The 48 tests require Bash, Zsh, Python 3, Git, and Bun (CI pins Bun 1.3.14).
 Ten exercise private credential creation, preservation, races, failures, and
-ignore rules. Ten exercise setup/navigation, five exercise Git helper behavior,
+ignore rules. Thirteen exercise setup/navigation and PyRIT retry behavior, five
+exercise Git helper behavior,
 ten exercise the JSON helper's parsing, preservation, permissions, and I/O
 failures, and ten exercise setup diagnostics. The diagnostic fixtures cover both
 shells, required failures, warning-only states, and preserved caller directories.
