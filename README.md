@@ -180,61 +180,50 @@ git clone https://github.com/CarbeneAI/Forge.git ~/Forge
 bash ~/Forge/scripts/setup-new-machine.sh
 ```
 
+The installer resolves the checkout from its own location, so another directory works too:
+
+```bash
+forge_checkout="$HOME/projects/Forge checkout"
+git clone https://github.com/CarbeneAI/Forge.git "$forge_checkout"
+bash "$forge_checkout/scripts/setup-new-machine.sh"
+```
+
+Install and authenticate Claude Code separately before starting `claude`.
+
 ### Windows (WSL)
 
-Forge runs on Windows via WSL (Windows Subsystem for Linux). Claude Code requires a Linux environment.
+Run the Linux instructions inside WSL Ubuntu. The installer is a Bash script; run it in the Linux shell rather than PowerShell.
 
-**1. Install WSL** (if not already installed — run in PowerShell as Administrator):
+If WSL is not installed, run this in PowerShell as Administrator:
 
 ```powershell
 wsl --install -d Ubuntu
 ```
 
-Restart your machine, then open Ubuntu from the Start menu and create your Linux username/password.
-
-**2. Install Claude Code in WSL:**
-
-```bash
-# Install Node.js (required for Claude Code)
-curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-sudo apt-get install -y nodejs
-
-# Install Claude Code
-npm install -g @anthropic-ai/claude-code
-
-# Verify
-claude --version
-```
-
-**3. Install Forge:**
-
-```bash
-git clone https://github.com/CarbeneAI/Forge.git ~/Forge
-bash ~/Forge/scripts/setup-new-machine.sh
-```
-
-**WSL Tips:**
-- Access Windows files from WSL at `/mnt/c/Users/YourName/`
-- VS Code: Install the "WSL" extension, then `code .` from WSL opens VS Code connected to your Linux environment
-- JetBrains: Use the Remote Development gateway to connect to WSL
-- Terminal: Windows Terminal gives the best experience for WSL sessions
-- GPU: WSL2 supports CUDA passthrough for local Ollama models — install NVIDIA drivers on Windows (not inside WSL)
+Restart if prompted, open Ubuntu, and create your Linux user. Clone Forge into that user's Linux home and run the installer there.
 
 ### Post-Install (all platforms)
 
 The setup script will:
-- Create symlink: `~/.claude` -> `~/Forge/.claude`
-- Configure `PAI_DIR` in settings.json for your machine
-- Install Bun (if not present)
-- Install Node.js (if not present, required for SemanticMemory on macOS)
-- Build native SQLite extension (`better-sqlite3` + `sqlite-vec`)
-- Add shell aliases to your `.bashrc` or `.zshrc`
-- Create `.env` from template
+
+- Check that the checkout contains `.claude` before changing your home configuration.
+- Link `~/.claude` to the checkout's `.claude`, backing up an existing directory as `~/.claude.backup.<timestamp>`.
+- Update an existing `PAI_DIR` entry in `settings.json` to `~/.claude`'s absolute path.
+- Install Bun if it is missing.
+- Add a source line for `scripts/pai-aliases.sh` to `.zshrc` if present, otherwise `.bashrc`.
+- Create `.env` from its template if no `.env` exists, and create local history directories.
+- Create a PyRIT virtual environment if its skill is present and `uv` or Python 3.13 is available.
+
+Rerunning preserves an existing `.env`, reuses the configured symlink, and avoids adding a duplicate alias source line. Existing lines mentioning `pai-aliases.sh` are kept; update that line manually if you move the checkout. `FORGE_REPO_DIR` identifies the checkout for shell helpers, while `PAI_DIR` remains the runtime configuration path at `~/.claude`.
+
+`settings.json` is machine-local and absent from a fresh clone. The installer warns when it is missing and does not create settings or register hooks. Review and migrate your previous settings from the reported backup, or configure Claude Code separately.
+
+The installer does not install Claude Code, Node.js, or SemanticMemory's native SQLite dependencies. Follow individual skill requirements before using those features. See the [Quick Start guide](docs/QUICKSTART.md) for setup checks and troubleshooting.
 
 **Add API keys (optional):**
 
 ```bash
-nano ~/Forge/.claude/.env
+nano "$HOME/.claude/.env"
 ```
 
 ```bash
@@ -252,9 +241,8 @@ claude
 **Verify:**
 
 ```bash
-forge-check   # Verify configuration
-forge-test    # Run health check
-forge-help    # See all commands
+pai-check    # Verify configuration
+pai-test     # Optional broader diagnostic; also probes a local voice service
 ```
 
 ---
@@ -263,16 +251,16 @@ forge-help    # See all commands
 
 | Command | Description |
 |---------|-------------|
-| `forge` | Go to Forge directory |
-| `forge-status` | Git status |
-| `forge-pull` | Pull latest from GitHub |
-| `forge-push` | Commit and push all changes |
-| `forge-sync` | Pull then push (full sync) |
-| `forge-check` | Verify configuration |
-| `forge-test` | Run health check |
-| `forge-skills` | List all skills |
-| `forge-agents` | List all agents |
-| `forge-new-skill <name>` | Create new skill from template |
+| `pai` | Go to Forge directory |
+| `pai-status` | Git status |
+| `pai-pull` | Pull latest from GitHub |
+| `pai-push` | Commit and push all changes |
+| `pai-sync` | Pull then push (full sync) |
+| `pai-check` | Verify configuration |
+| `pai-test` | Optional broader runtime diagnostic |
+| `pai-skills` | List all skills |
+| `pai-agents` | List all agents |
+| `pai-new-skill <name>` | Create new skill from template |
 
 ---
 
@@ -302,7 +290,7 @@ Skills are self-contained AI capability packages that activate automatically bas
 ### Creating Your Own
 
 ```bash
-forge-new-skill MySkill
+pai-new-skill MySkill
 # Or: "Create a new skill for [purpose]"
 ```
 
@@ -398,7 +386,7 @@ Full philosophy: [`.claude/skills/CORE/CONSTITUTION.md`](.claude/skills/CORE/CON
 ```
 ~/Forge/
 ├── .claude/
-│   ├── settings.json          # Configuration (PAI_DIR, DA name, env vars)
+│   ├── settings.json          # Machine-local configuration (not supplied)
 │   ├── .env                   # API keys (never committed)
 │   ├── mcp.json               # MCP server configuration
 │   ├── hooks/                 # Event-driven automation (TypeScript)
@@ -485,11 +473,11 @@ git clone https://github.com/CarbeneAI/Forge.git ~/Forge
 bash ~/Forge/scripts/setup-new-machine.sh
 
 # Daily workflow
-forge-pull   # Get latest
-forge-push   # Save changes
+pai-pull   # Get latest
+pai-push   # Save changes
 ```
 
-> **Note:** `PAI_DIR` in settings.json is machine-specific. The setup script auto-configures it per machine.
+> **Note:** `PAI_DIR` in machine-local `settings.json` is machine-specific. The setup script updates it only when that file and entry already exist.
 
 ---
 
@@ -518,13 +506,14 @@ All core docs live in `.claude/skills/CORE/`:
 | [**SKILL.md**](.claude/skills/CORE/SKILL.md) | Main configuration and identity |
 | [**HookSystem.md**](.claude/skills/CORE/HookSystem.md) | Event-driven automation |
 | [**HistorySystem.md**](.claude/skills/CORE/HistorySystem.md) | Automatic work documentation |
-| [**Architecture.md**](.claude/skills/CORE/Architecture.md) | Complete architecture reference |
 
 ---
 
 ## Configuration
 
 ### Environment Variables (settings.json)
+
+`~/.claude/settings.json` is gitignored and not included in a fresh clone. Review or configure your local settings separately, including any hooks and permissions you need. The installer only updates an existing `PAI_DIR` entry. This example shows environment values, not a complete hook configuration:
 
 ```json
 {
@@ -538,10 +527,10 @@ All core docs live in `.claude/skills/CORE/`:
 
 ### API Keys (.env)
 
-All API keys go in `~/.claude/.env` (gitignored, never committed). Copy from `.env.example` to get started.
+All API keys go in `~/.claude/.env` (gitignored). The installer creates it from `.env.example` when missing and preserves an existing file. Keep credentials out of commits.
 
-**Core (no API keys needed):**
-Forge works out of the box with just Claude Code. All keys below unlock optional features.
+**Claude Code authentication:**
+Authenticate Claude Code separately. The keys below enable optional integrations.
 
 **Research APIs:**
 

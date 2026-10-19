@@ -3,38 +3,49 @@
 # PAI Shell Aliases and Functions
 # ===========================================
 # Source this file in your .bashrc or .zshrc:
-#   source ~/PAI/scripts/pai-aliases.sh
+#   source ~/Forge/scripts/pai-aliases.sh
 #
 # Or add this line to your shell config:
-#   [ -f ~/PAI/scripts/pai-aliases.sh ] && source ~/PAI/scripts/pai-aliases.sh
+#   [ -f ~/Forge/scripts/pai-aliases.sh ] && source ~/Forge/scripts/pai-aliases.sh
 # ===========================================
+
+# Resolve this sourced file rather than assuming a checkout name or location.
+# PAI_DIR is reserved for the runtime configuration directory (~/.claude).
+if [ -n "${BASH_VERSION:-}" ]; then
+    FORGE_REPO_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)" || return 1
+elif [ -n "${ZSH_VERSION:-}" ]; then
+    FORGE_REPO_DIR="$(cd -- "$(dirname -- "${(%):-%N}")/.." && pwd -P)" || return 1
+else
+    echo "PAI aliases require Bash or Zsh." >&2
+    return 1
+fi
 
 # -------------------------------------------
 # Directory Navigation
 # -------------------------------------------
-alias pai="cd ~/PAI"
-alias paic="cd ~/PAI/.claude"
-alias pais="cd ~/PAI/.claude/skills"
-alias paia="cd ~/PAI/.claude/agents"
-alias paih="cd ~/PAI/.claude/hooks"
+alias pai='cd "$FORGE_REPO_DIR"'
+alias paic='cd "$FORGE_REPO_DIR/.claude"'
+alias pais='cd "$FORGE_REPO_DIR/.claude/skills"'
+alias paia='cd "$FORGE_REPO_DIR/.claude/agents"'
+alias paih='cd "$FORGE_REPO_DIR/.claude/hooks"'
 
 # -------------------------------------------
 # Git Status and Info
 # -------------------------------------------
-alias pai-status="cd ~/PAI && git status"
-alias pai-diff="cd ~/PAI && git diff"
-alias pai-log="cd ~/PAI && git log --oneline -10"
-alias pai-log-full="cd ~/PAI && git log --oneline -30"
-alias pai-branch="cd ~/PAI && git branch -a"
+alias pai-status='cd "$FORGE_REPO_DIR" && git status'
+alias pai-diff='cd "$FORGE_REPO_DIR" && git diff'
+alias pai-log='cd "$FORGE_REPO_DIR" && git log --oneline -10'
+alias pai-log-full='cd "$FORGE_REPO_DIR" && git log --oneline -30'
+alias pai-branch='cd "$FORGE_REPO_DIR" && git branch -a'
 
 # -------------------------------------------
 # Git Sync Operations
 # -------------------------------------------
-alias pai-pull="cd ~/PAI && git pull origin main"
-alias pai-fetch="cd ~/PAI && git fetch origin main"
+alias pai-pull='cd "$FORGE_REPO_DIR" && git pull origin main'
+alias pai-fetch='cd "$FORGE_REPO_DIR" && git fetch origin main'
 
 # Push with auto-generated commit message
-alias pai-push="cd ~/PAI && git add -A && git commit -m 'sync: \$(date +%Y-%m-%d\ %H:%M)' && git push origin main"
+alias pai-push='cd "$FORGE_REPO_DIR" && git add -A && git commit -m '\''sync: $(date +%Y-%m-%d\ %H:%M)'\'' && git push origin main'
 
 # Push with custom message
 pai-commit() {
@@ -42,13 +53,13 @@ pai-commit() {
         echo "Usage: pai-commit \"your commit message\""
         return 1
     fi
-    cd ~/PAI && git add -A && git commit -m "$1" && git push origin main
+    cd "$FORGE_REPO_DIR" && git add -A && git commit -m "$1" && git push origin main
 }
 
 # Full sync (pull then push)
 pai-sync() {
     echo "Pulling latest changes..."
-    cd ~/PAI && git pull origin main
+    cd "$FORGE_REPO_DIR" && git pull origin main
 
     if [ -n "$(git status --porcelain)" ]; then
         echo "Pushing local changes..."
@@ -73,14 +84,14 @@ pai-edit() {
     local file="$1"
     # If path doesn't start with /, assume it's relative to PAI
     if [[ "$file" != /* ]]; then
-        file="$HOME/PAI/$file"
+        file="$FORGE_REPO_DIR/$file"
     fi
 
     ${EDITOR:-nano} "$file"
 
-    cd ~/PAI
+    cd "$FORGE_REPO_DIR"
     git add "$file"
-    git commit -m "update: $(basename $file)"
+    git commit -m "update: $(basename "$file")"
     git push origin main
 }
 
@@ -89,7 +100,7 @@ pai-edit-skill() {
     if [ -z "$1" ]; then
         echo "Usage: pai-edit-skill <SkillName>"
         echo "Available skills:"
-        ls ~/PAI/.claude/skills/
+        ls "$FORGE_REPO_DIR/.claude/skills/"
         return 1
     fi
     pai-edit ".claude/skills/$1/SKILL.md"
@@ -100,7 +111,7 @@ pai-edit-agent() {
     if [ -z "$1" ]; then
         echo "Usage: pai-edit-agent <AgentName>"
         echo "Available agents:"
-        ls ~/PAI/.claude/agents/
+        ls "$FORGE_REPO_DIR/.claude/agents/"
         return 1
     fi
     pai-edit ".claude/agents/$1"
@@ -114,14 +125,14 @@ pai-edit-agent() {
 pai-skills() {
     echo "PAI Skills:"
     echo "==========="
-    ls -1 ~/PAI/.claude/skills/
+    ls -1 "$FORGE_REPO_DIR/.claude/skills/"
 }
 
 # List all agents
 pai-agents() {
     echo "PAI Agents:"
     echo "==========="
-    ls -1 ~/PAI/.claude/agents/
+    ls -1 "$FORGE_REPO_DIR/.claude/agents/"
 }
 
 # Create a new skill from template
@@ -132,7 +143,7 @@ pai-new-skill() {
     fi
 
     local skill_name="$1"
-    local skill_dir="$HOME/PAI/.claude/skills/$skill_name"
+    local skill_dir="$FORGE_REPO_DIR/.claude/skills/$skill_name"
 
     if [ -d "$skill_dir" ]; then
         echo "Error: Skill '$skill_name' already exists!"
@@ -194,7 +205,7 @@ EOF
 # Run PAI self-test
 pai-test() {
     echo "Running PAI self-test..."
-    bun ~/PAI/.claude/hooks/self-test.ts
+    bun "$FORGE_REPO_DIR/.claude/hooks/self-test.ts"
 }
 
 # Check PAI configuration
@@ -202,14 +213,14 @@ pai-check() {
     echo "PAI Configuration Check"
     echo "======================="
     echo ""
-    echo "PAI Directory: ~/PAI"
-    [ -d ~/PAI ] && echo "  [OK] Directory exists" || echo "  [FAIL] Directory missing!"
+    echo "PAI Directory: $FORGE_REPO_DIR"
+    [ -d "$FORGE_REPO_DIR" ] && echo "  [OK] Directory exists" || echo "  [FAIL] Directory missing!"
 
     echo ""
     echo ".claude symlink:"
-    if [ -L ~/.claude ]; then
-        echo "  [OK] ~/.claude -> $(readlink ~/.claude)"
-    elif [ -d ~/.claude ]; then
+    if [ -L "$HOME/.claude" ]; then
+        echo "  [OK] ~/.claude -> $(readlink "$HOME/.claude")"
+    elif [ -d "$HOME/.claude" ]; then
         echo "  [WARN] ~/.claude is a directory, not a symlink"
     else
         echo "  [FAIL] ~/.claude does not exist!"
@@ -217,11 +228,11 @@ pai-check() {
 
     echo ""
     echo "Git Status:"
-    cd ~/PAI && git status --short
+    cd "$FORGE_REPO_DIR" && git status --short
 
     echo ""
     echo "Environment:"
-    [ -f ~/PAI/.claude/.env ] && echo "  [OK] .env file exists" || echo "  [WARN] .env file missing!"
+    [ -f "$FORGE_REPO_DIR/.claude/.env" ] && echo "  [OK] .env file exists" || echo "  [WARN] .env file missing!"
 
     echo ""
     echo "Bun:"
@@ -234,12 +245,12 @@ pai-check() {
 
 # Show files with conflicts
 pai-conflicts() {
-    cd ~/PAI && git diff --name-only --diff-filter=U
+    cd "$FORGE_REPO_DIR" && git diff --name-only --diff-filter=U
 }
 
 # Abort a merge in progress
 pai-abort() {
-    cd ~/PAI && git merge --abort
+    cd "$FORGE_REPO_DIR" && git merge --abort
     echo "Merge aborted. Repository is back to pre-merge state."
 }
 
@@ -253,7 +264,7 @@ pai-undo() {
     read -p "Are you sure? (y/n) " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        cd ~/PAI && git reset --soft HEAD~1
+        cd "$FORGE_REPO_DIR" && git reset --soft HEAD~1
         echo "Last commit undone. Changes are staged."
     fi
 }
@@ -264,7 +275,7 @@ pai-reset() {
     read -p "Are you sure? (y/n) " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        cd ~/PAI && git checkout -- . && git clean -fd
+        cd "$FORGE_REPO_DIR" && git checkout -- . && git clean -fd
         echo "All local changes discarded."
     fi
 }
@@ -280,7 +291,7 @@ pai-search() {
         echo "Example: pai-search \"trading strategies\" --limit 10"
         return 1
     fi
-    bun ~/PAI/.claude/skills/CORE/tools/MemorySearch.ts "$@"
+    bun "$FORGE_REPO_DIR/.claude/skills/CORE/tools/MemorySearch.ts" "$@"
 }
 
 # -------------------------------------------

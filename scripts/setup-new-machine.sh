@@ -2,11 +2,11 @@
 # ===========================================
 # PAI New Machine Setup Script
 # ===========================================
-# Run this script on a new machine after cloning the PAI repo
+# Run this script on a new machine after cloning Forge
 #
 # Usage:
-#   git clone git@github.com:YOUR_USERNAME/pai-config.git ~/PAI
-#   bash ~/PAI/scripts/setup-new-machine.sh
+#   git clone https://github.com/CarbeneAI/Forge.git ~/Forge
+#   bash ~/Forge/scripts/setup-new-machine.sh
 # ===========================================
 
 set -e  # Exit on error
@@ -16,20 +16,19 @@ echo "  PAI New Machine Setup"
 echo "=============================================="
 echo ""
 
-PAI_DIR="$HOME/PAI"
+FORGE_REPO_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 CLAUDE_DIR="$HOME/.claude"
 
 # -------------------------------------------
-# Step 1: Verify PAI directory exists
+# Step 1: Verify checkout configuration exists
 # -------------------------------------------
-echo "[1/7] Checking PAI directory..."
-if [ ! -d "$PAI_DIR" ]; then
-    echo "ERROR: PAI directory not found at $PAI_DIR"
-    echo "Please clone the repository first:"
-    echo "  git clone git@github.com:YOUR_USERNAME/pai-config.git ~/PAI"
+echo "[1/7] Checking checkout configuration..."
+if [ ! -d "$FORGE_REPO_DIR/.claude" ]; then
+    echo "ERROR: Checkout configuration not found at $FORGE_REPO_DIR/.claude"
+    echo "Run this script from a complete Forge checkout."
     exit 1
 fi
-echo "  OK: PAI directory found at $PAI_DIR"
+echo "  OK: Checkout configuration found at $FORGE_REPO_DIR/.claude"
 
 # -------------------------------------------
 # Step 2: Handle existing .claude directory
@@ -40,12 +39,12 @@ echo "[2/7] Configuring ~/.claude symlink..."
 if [ -L "$CLAUDE_DIR" ]; then
     # It's already a symlink
     current_target=$(readlink "$CLAUDE_DIR")
-    if [ "$current_target" = "$PAI_DIR/.claude" ]; then
+    if [ "$current_target" = "$FORGE_REPO_DIR/.claude" ]; then
         echo "  OK: Symlink already correctly configured"
     else
-        echo "  Updating symlink from $current_target to $PAI_DIR/.claude"
+        echo "  Updating symlink from $current_target to $FORGE_REPO_DIR/.claude"
         rm "$CLAUDE_DIR"
-        ln -s "$PAI_DIR/.claude" "$CLAUDE_DIR"
+        ln -s "$FORGE_REPO_DIR/.claude" "$CLAUDE_DIR"
         echo "  OK: Symlink updated"
     fi
 elif [ -d "$CLAUDE_DIR" ]; then
@@ -54,7 +53,7 @@ elif [ -d "$CLAUDE_DIR" ]; then
     echo "  Found existing ~/.claude directory"
     echo "  Backing up to: $backup_dir"
     mv "$CLAUDE_DIR" "$backup_dir"
-    ln -s "$PAI_DIR/.claude" "$CLAUDE_DIR"
+    ln -s "$FORGE_REPO_DIR/.claude" "$CLAUDE_DIR"
     echo "  OK: Backed up old directory and created symlink"
     echo ""
     echo "  NOTE: Check $backup_dir for any files you want to migrate"
@@ -65,8 +64,8 @@ elif [ -e "$CLAUDE_DIR" ]; then
     exit 1
 else
     # Doesn't exist - create symlink
-    ln -s "$PAI_DIR/.claude" "$CLAUDE_DIR"
-    echo "  OK: Created symlink ~/.claude -> $PAI_DIR/.claude"
+    ln -s "$FORGE_REPO_DIR/.claude" "$CLAUDE_DIR"
+    echo "  OK: Created symlink ~/.claude -> $FORGE_REPO_DIR/.claude"
 fi
 
 # -------------------------------------------
@@ -75,19 +74,23 @@ fi
 echo ""
 echo "[3/8] Configuring PAI_DIR in settings.json..."
 
-SETTINGS_FILE="$PAI_DIR/.claude/settings.json"
+SETTINGS_FILE="$FORGE_REPO_DIR/.claude/settings.json"
 ACTUAL_CLAUDE_DIR="$HOME/.claude"
 
 if [ -f "$SETTINGS_FILE" ]; then
+    # Escape the path for JSON first, then for sed's replacement syntax.
+    settings_path=$(printf '%s' "$ACTUAL_CLAUDE_DIR" | sed 's/\\/\\\\/g; s/"/\\"/g' | sed 's/[\\&|]/\\&/g')
+    # Match JSON escapes too, so rerunning with quotes/backslashes is safe.
+    settings_pattern='"PAI_DIR": "[^"\\]*\(\\.[^"\\]*\)*"'
     # Update PAI_DIR to this machine's path
     if grep -q '"PAI_DIR":' "$SETTINGS_FILE"; then
         # Use sed to replace the PAI_DIR value
         if [[ "$OSTYPE" == "darwin"* ]]; then
             # macOS sed requires different syntax
-            sed -i '' "s|\"PAI_DIR\": \"[^\"]*\"|\"PAI_DIR\": \"$ACTUAL_CLAUDE_DIR\"|g" "$SETTINGS_FILE"
+            sed -i '' "s|$settings_pattern|\"PAI_DIR\": \"$settings_path\"|g" "$SETTINGS_FILE"
         else
             # Linux sed
-            sed -i "s|\"PAI_DIR\": \"[^\"]*\"|\"PAI_DIR\": \"$ACTUAL_CLAUDE_DIR\"|g" "$SETTINGS_FILE"
+            sed -i "s|$settings_pattern|\"PAI_DIR\": \"$settings_path\"|g" "$SETTINGS_FILE"
         fi
         echo "  OK: PAI_DIR set to $ACTUAL_CLAUDE_DIR"
     else
@@ -103,8 +106,8 @@ fi
 echo ""
 echo "[4/8] Setting up environment file..."
 
-ENV_FILE="$PAI_DIR/.claude/.env"
-ENV_EXAMPLE="$PAI_DIR/.claude/.env.example"
+ENV_FILE="$FORGE_REPO_DIR/.claude/.env"
+ENV_EXAMPLE="$FORGE_REPO_DIR/.claude/.env.example"
 
 if [ -f "$ENV_FILE" ]; then
     echo "  OK: .env file already exists"
@@ -168,7 +171,9 @@ fi
 echo ""
 echo "[6/8] Setting up shell aliases..."
 
-ALIAS_FILE="$PAI_DIR/scripts/pai-aliases.sh"
+ALIAS_FILE="$FORGE_REPO_DIR/scripts/pai-aliases.sh"
+# Bash %q produces a source path safe for both Bash and Zsh rc files.
+printf -v QUOTED_ALIAS_FILE '%q' "$ALIAS_FILE"
 SHELL_RC=""
 
 # Detect shell
@@ -185,13 +190,13 @@ if [ -n "$SHELL_RC" ] && [ -f "$ALIAS_FILE" ]; then
     else
         echo "" >> "$SHELL_RC"
         echo "# PAI aliases" >> "$SHELL_RC"
-        echo "[ -f ~/PAI/scripts/pai-aliases.sh ] && source ~/PAI/scripts/pai-aliases.sh" >> "$SHELL_RC"
+        printf '[ -f %s ] && source %s\n' "$QUOTED_ALIAS_FILE" "$QUOTED_ALIAS_FILE" >> "$SHELL_RC"
         echo "  OK: Added alias source to $SHELL_RC"
     fi
 else
     echo "  WARNING: Could not detect shell config file"
     echo "  Manually add this line to your shell config:"
-    echo "    source ~/PAI/scripts/pai-aliases.sh"
+    echo "    source $QUOTED_ALIAS_FILE"
 fi
 
 # -------------------------------------------
@@ -200,9 +205,9 @@ fi
 echo ""
 echo "[7/9] Creating local directories..."
 
-mkdir -p "$PAI_DIR/.claude/history/sessions"
-mkdir -p "$PAI_DIR/.claude/history/learnings"
-mkdir -p "$PAI_DIR/.claude/history/raw-outputs"
+mkdir -p "$FORGE_REPO_DIR/.claude/history/sessions"
+mkdir -p "$FORGE_REPO_DIR/.claude/history/learnings"
+mkdir -p "$FORGE_REPO_DIR/.claude/history/raw-outputs"
 echo "  OK: Created history directories"
 
 # -------------------------------------------
@@ -211,7 +216,7 @@ echo "  OK: Created history directories"
 echo ""
 echo "[8/9] Setting up PyRIT (AI red-teaming)..."
 
-PYRIT_DIR="$PAI_DIR/.claude/skills/PyRIT"
+PYRIT_DIR="$FORGE_REPO_DIR/.claude/skills/PyRIT"
 if [ -d "$PYRIT_DIR" ]; then
     if [ -d "$PYRIT_DIR/venv" ]; then
         echo "  OK: PyRIT venv already exists"
@@ -245,7 +250,7 @@ echo "[9/9] Verifying setup..."
 echo ""
 
 # Check symlink
-if [ -L "$CLAUDE_DIR" ] && [ "$(readlink $CLAUDE_DIR)" = "$PAI_DIR/.claude" ]; then
+if [ -L "$CLAUDE_DIR" ] && [ "$(readlink "$CLAUDE_DIR")" = "$FORGE_REPO_DIR/.claude" ]; then
     echo "  [OK] ~/.claude symlink configured correctly"
 else
     echo "  [!!] ~/.claude symlink issue"
@@ -266,7 +271,7 @@ else
 fi
 
 # Check git
-if [ -d "$PAI_DIR/.git" ]; then
+if [ -d "$FORGE_REPO_DIR/.git" ]; then
     echo "  [OK] Git repository configured"
 else
     echo "  [!!] Not a git repository"
@@ -280,10 +285,10 @@ echo ""
 echo "Next steps:"
 echo ""
 echo "1. Edit your API keys:"
-echo "   nano ~/PAI/.claude/.env"
+printf '   nano %q\n' "$ENV_FILE"
 echo ""
 echo "2. Restart your terminal or run:"
-echo "   source $SHELL_RC"
+printf '   source %q\n' "$SHELL_RC"
 echo ""
 echo "3. Test the setup:"
 echo "   pai-check"

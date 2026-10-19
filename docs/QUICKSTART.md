@@ -1,369 +1,118 @@
-# PAI Quick Start Guide
+# Forge Quick Start Guide
 
-**Get PAI running in 5 minutes**
+Use `scripts/setup-new-machine.sh` from this repository to connect a Forge checkout to Claude Code. The installer runs in Bash on macOS and Linux; on Windows, use a Linux shell inside WSL. Shell helpers support Bash and Zsh.
 
----
+## Install from a checkout
 
-## Installation
-
-Choose your platform:
-
-<details>
-<summary><strong>macOS</strong></summary>
-
-### 1. Clone PAI
+Git and Bash must be available. Install and authenticate Claude Code separately; this script does not install it.
 
 ```bash
-git clone https://github.com/danielmiessler/PAI.git ~/.claude
+git clone https://github.com/CarbeneAI/Forge.git "$HOME/Forge"
+bash "$HOME/Forge/scripts/setup-new-machine.sh"
 ```
 
-### 2. Run the Setup Wizard
+The checkout can live elsewhere, including a path with spaces or apostrophes. Quote the path when invoking the installer:
 
 ```bash
-~/.claude/.claude/tools/setup/bootstrap.sh
+forge_checkout="$HOME/projects/Forge checkout"
+git clone https://github.com/CarbeneAI/Forge.git "$forge_checkout"
+bash "$forge_checkout/scripts/setup-new-machine.sh"
 ```
 
-The bootstrap script handles everything:
-- **Shell check** — Recommends zsh or bash if you're using something else
-- **Bun install** — Offers to install Bun if not found (PAI's package manager)
-- **Claude Code check** — Reminds you to install Claude Code if missing
-- **Setup wizard** — Launches the interactive configuration
+The script finds the checkout from its own file location, so the current working directory does not matter. Keep the checkout outside `~/.claude`: the installer creates that path as a symlink to the checkout's `.claude` directory.
 
-### 3. Add Your API Keys
+### What setup changes
+
+| Item | Installer behavior |
+|------|--------------------|
+| Checkout validation | Requires a `.claude` directory before changing home configuration. |
+| `~/.claude` | Creates a symlink to the checkout's `.claude`; backs up an existing directory as `~/.claude.backup.<timestamp>`. Updates an existing symlink if it points elsewhere. |
+| `.claude/settings.json` | Updates an existing `PAI_DIR` entry to the absolute path of `~/.claude`. Warns when settings are absent; does not create the file or register hooks. |
+| `.claude/.env` | Keeps an existing file. Otherwise copies `.env.example`, or creates a minimal file if the template is absent. |
+| Bun | Reuses an installed executable, or attempts installation through Homebrew on macOS when available, otherwise through the Bun installer. |
+| Shell configuration | Adds a safely quoted source line for `scripts/pai-aliases.sh` to an existing `.zshrc`, otherwise `.bashrc`. Keeps any existing line mentioning `pai-aliases.sh`. |
+| Local history | Creates `history/sessions`, `history/learnings`, and `history/raw-outputs` inside the checkout's `.claude`. |
+| PyRIT | Keeps an existing virtual environment. If the skill is present without one, attempts setup using `uv` or Python 3.13; otherwise reports a skip. |
+
+The script does not install Node.js or build SemanticMemory's native SQLite dependencies. Individual skills may require additional runtimes, packages, credentials, or services. The installer does not run the separate interactive setup wizard.
+
+### Configure machine-local settings
+
+`settings.json` is gitignored and is not supplied in a fresh clone. A completed installer run establishes the directory layout; it does not enable the repository's hooks by itself. Review and migrate previous settings from the backup path printed by setup, or configure Claude Code separately. Include only the hooks and permissions you intend to use.
+
+When using Forge's runtime helpers, set `env.PAI_DIR` to your absolute `~/.claude` path. The installer can update that entry on subsequent runs once it exists. The README's [configuration example](../README.md#configuration) shows environment values; it is not a complete hook configuration.
+
+### Rerun or move a checkout
+
+Run the same installer command to refresh setup. A correctly configured symlink and an existing `.env` are reused, and shell source lines are not duplicated. If setup backs up a previous `~/.claude` directory, inspect the reported backup path for files to migrate.
+
+If you move the checkout, rerun the installer from its new location and edit the existing `pai-aliases.sh` source line in your shell configuration to use the new path. Setup preserves existing source lines rather than rewriting them.
+
+`PAI_DIR` in Claude settings identifies the runtime configuration directory, normally `~/.claude`. `FORGE_REPO_DIR` is resolved when the shell aliases are sourced and identifies the checkout. Keep these separate when writing skills or shell integrations.
+
+## Reload and verify
+
+Restart your terminal, or source the shell configuration path printed by setup. For example, in Bash:
 
 ```bash
-# Copy environment template
-cp ~/.claude/.env.example ~/.claude/.env
-
-# Edit with your API keys
-nano ~/.claude/.env
-
-# Required: ANTHROPIC_API_KEY
-# Optional: PERPLEXITY_API_KEY, GOOGLE_API_KEY for research
+source "$HOME/.bashrc"
+pai-check
 ```
 
-### 4. Reload Your Shell
+For Zsh, use `source "$HOME/.zshrc"`. The existing public shell commands use the `pai` prefix:
+
+| Command | Purpose |
+|---------|---------|
+| `pai` | Navigate to the checkout. |
+| `paic` | Navigate to its `.claude` directory. |
+| `pai-check` | Show the checkout, symlink, Git status, environment file, and Bun checks. |
+| `pai-skills` | List installed skill directories. |
+| `pai-agents` | List agent configuration files. |
+| `pai-test` | Optional broader runtime diagnostic, including an optional local voice service probe. |
+
+`pai-test` requires configured settings and additional runtime features. It is separate from the isolated installer fixtures used by CI.
+
+The alias definitions live in [`scripts/pai-aliases.sh`](../scripts/pai-aliases.sh). Review them before using Git helpers such as `pai-push`, which stages, commits, and pushes local changes.
+
+## Configure optional services
+
+Edit the environment file already created by setup:
 
 ```bash
-source ~/.zshrc
+nano "$HOME/.claude/.env"
 ```
 
-</details>
+Add only credentials required by the skills you plan to use. The template describes research keys such as `GOOGLE_API_KEY` and `PERPLEXITY_API_KEY`. Preserve existing values and keep credentials out of commits.
 
-<details>
-<summary><strong>Linux</strong></summary>
-
-### 1. Clone PAI
-
-```bash
-git clone https://github.com/danielmiessler/PAI.git ~/.claude
-```
-
-### 2. Run the Setup Wizard
-
-```bash
-~/.claude/.claude/tools/setup/bootstrap.sh
-```
-
-The bootstrap script handles everything:
-- **Shell check** — Recommends zsh or bash if you're using something else
-- **Bun install** — Offers to install Bun if not found (PAI's package manager)
-- **Claude Code check** — Reminds you to install Claude Code if missing
-- **Setup wizard** — Launches the interactive configuration
-
-### 3. Add Your API Keys
-
-```bash
-# Copy environment template
-cp ~/.claude/.env.example ~/.claude/.env
-
-# Edit with your API keys
-nano ~/.claude/.env
-
-# Required: ANTHROPIC_API_KEY
-# Optional: PERPLEXITY_API_KEY, GOOGLE_API_KEY for research
-```
-
-### 4. Reload Your Shell
-
-```bash
-source ~/.bashrc  # or ~/.zshrc if using zsh
-```
-
-</details>
-
-<details>
-<summary><strong>Windows</strong></summary>
-
-### 1. Clone PAI
-
-```powershell
-git clone https://github.com/danielmiessler/PAI.git $env:USERPROFILE\.claude
-```
-
-### 2. Run the Setup Wizard
-
-```powershell
-& "$env:USERPROFILE\.claude\.claude\tools\setup\bootstrap.ps1"
-```
-
-The bootstrap script handles everything:
-- **Bun install** — Offers to install Bun if not found (PAI's package manager)
-- **Claude Code check** — Reminds you to install Claude Code if missing
-- **Setup wizard** — Launches the interactive configuration
-
-### 3. Add Your API Keys
-
-```powershell
-# Copy environment template
-Copy-Item "$env:USERPROFILE\.claude\.env.example" "$env:USERPROFILE\.claude\.env"
-
-# Edit with your API keys (use your preferred editor)
-notepad "$env:USERPROFILE\.claude\.env"
-
-# Required: ANTHROPIC_API_KEY
-# Optional: PERPLEXITY_API_KEY, GOOGLE_API_KEY for research
-```
-
-### 4. Reload Your Shell
-
-Close and reopen PowerShell, or run:
-
-```powershell
-. $PROFILE
-```
-
-</details>
-
----
-
-## Setup Wizard Options
-
-The interactive wizard configures:
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| **PAI Directory** | Where to install | `~/.claude` |
-| **Your Name** | Auto-detected from git config | — |
-| **Your Email** | Auto-detected from git config | — |
-| **Assistant Name** | Name your AI | `Kai` |
-| **Color Theme** | blue, purple, green, cyan, red | `blue` |
-| **Shell Profile** | Add environment variables | Yes |
-
-### Non-Interactive Mode
-
-For automation or scripting:
-
-**macOS/Linux:**
-```bash
-cd ~/.claude/.claude/tools/setup
-bun run setup.ts \
-  --pai-dir ~/.claude \
-  --name "Your Name" \
-  --email you@example.com \
-  --assistant-name "Kai" \
-  --force
-```
-
-**Windows:**
-```powershell
-cd "$env:USERPROFILE\.claude\.claude\tools\setup"
-bun run setup.ts `
-  --pai-dir "$env:USERPROFILE\.claude" `
-  --name "Your Name" `
-  --email you@example.com `
-  --assistant-name "Kai" `
-  --force
-```
-
-### Dry Run
-
-Preview changes without applying them:
-
-```bash
-bun run setup.ts --dry-run
-```
-
----
-
-## First Run
-
-### Start Claude Code
+Start Claude Code after completing its own installation and authentication:
 
 ```bash
 claude
 ```
 
-PAI loads automatically via the `SessionStart` hook.
-
-### Try These Commands
-
-```
-"What skills are available?"
-"Show me my stack preferences"
-"What agents do I have access to?"
-"Read the CONSTITUTION"
-```
-
----
-
-## Understanding PAI
-
-### The Three Primitives
-
-**1. Skills** (`.claude/skills/`)
-- Self-contained AI capabilities
-- Auto-activate based on your request
-- Package routing, workflows, and documentation
-
-**2. Agents** (`.claude/agents/`)
-- Specialized AI personalities
-- Engineer, researcher, designer, pentester, etc.
-- Each has unique voice and capabilities
-
-### Available Agents
-
-| Agent | Purpose | Example Use |
-|-------|---------|-------------|
-| **grok-researcher** | Research synthesis & content ideas | Combine research, generate blog/video ideas |
-| **architect** | System design & PRDs | Plan features, architecture decisions |
-| **engineer** | Code implementation | Write code, TDD, debugging |
-| **designer** | UX/UI design | Visual design, design systems |
-| **pentester** | Security testing | Vulnerability assessment, audits |
-| **researcher** | General research | Information gathering |
-| **claude-researcher** | Web search | Current events, quick lookups |
-| **perplexity-researcher** | Deep research with citations | Academic-quality sourced research |
-| **gemini-researcher** | Multi-perspective research | Technical deep dives |
-
-**Invoke agents via:**
-- Natural language: "Use the architect agent to design a login system"
-- Telegram: `/agent architect Design a login system`
-
-**3. Hooks** (`.claude/hooks/`)
-- Event-driven automation
-- Capture work, provide voice feedback, manage state
-- Run automatically on session start/stop, tool use, etc.
-
-### Where Everything Lives
-
-```
-~/.claude/
-├── skills/
-│   └── CORE/                 # Main PAI documentation
-│       ├── CONSTITUTION.md   # System philosophy & architecture
-│       ├── SKILL.md          # Main skill file (loaded at startup)
-│       └── *.md              # Reference documentation
-├── agents/                   # Agent configurations
-├── hooks/                    # Event automation scripts
-└── .env                      # Your API keys (never commit!)
-```
-
----
+Explore the checked-in [CORE skill](../.claude/skills/CORE/SKILL.md), [skill structure guide](../.claude/skills/CORE/SkillSystem.md), and [agent configurations](../.claude/agents/) for the capabilities in this checkout.
 
 ## Troubleshooting
 
-<details>
-<summary><strong>PAI Not Loading</strong></summary>
+**Checkout configuration missing:** Run the script from a complete Forge clone containing `.claude`. It stops before changing home configuration if that directory is absent.
 
-**Check hook configuration:**
-```bash
-cat ~/.claude/settings.json | grep SessionStart
-```
+**Aliases unavailable or pointing to an old checkout:** Check the `pai-aliases.sh` source line in `.bashrc` or `.zshrc`, then reload that file. Quoted paths are required for checkout names containing spaces or shell characters.
 
-**Manually load CORE skill:**
-```
-read ~/.claude/skills/CORE/SKILL.md
-```
+**Settings missing or hooks report an old runtime path:** A fresh clone has no `settings.json`. Review and migrate previous settings from the reported backup, or configure Claude Code separately. If the file already contains `env.PAI_DIR`, rerun the installer to update its value to the absolute path of your `~/.claude` symlink. Rerunning does not generate settings or hook registrations.
 
-</details>
+**Bun unavailable:** Check `command -v bun` in a new terminal. Setup reports installation problems; the hook self-test requires Bun on `PATH`.
 
-<details>
-<summary><strong>Hooks Not Running</strong></summary>
+For repository issues, use [CarbeneAI/Forge issues](https://github.com/CarbeneAI/Forge/issues).
 
-Hooks require Bun to be installed and in your PATH.
+## For contributors and coding agents
 
-**macOS/Linux:**
-```bash
-which bun
-# Should show: ~/.bun/bin/bun or /opt/homebrew/bin/bun
-```
-
-**Windows:**
-```powershell
-Get-Command bun
-# Should show the bun executable path
-```
-
-If Bun isn't found, reinstall it and restart your terminal.
-
-</details>
-
-<details>
-<summary><strong>Hook Errors Mentioning "__HOME__"</strong></summary>
-
-If you see errors like `No such file or directory: __HOME__/.claude/...`, the `PAI_DIR` variable wasn't configured correctly.
-
-**Fix: Re-run the setup script**
-```bash
-bash ~/.claude/.claude/setup.sh
-```
-
-This automatically configures `PAI_DIR` with your actual home directory path.
-
-**Manual fix (if setup script doesn't work):**
-```bash
-# Edit settings.json
-nano ~/.claude/settings.json
-
-# Find this line:
-"PAI_DIR": "__HOME__/.claude"
-
-# Replace with your actual path (examples):
-# macOS: "PAI_DIR": "/Users/yourusername/.claude"
-# Linux: "PAI_DIR": "/home/yourusername/.claude"
-```
-
-</details>
-
-<details>
-<summary><strong>API Keys Not Working</strong></summary>
+Keep installation instructions aligned with `scripts/setup-new-machine.sh` and preserve the public `pai-*` shell names. Validate changes with the isolated fixtures before recommending an install:
 
 ```bash
-# Verify .env file exists
-ls -la ~/.claude/.env
-
-# Check format (no spaces around =)
-# Correct: ANTHROPIC_API_KEY=sk-ant-...
-# Wrong:   ANTHROPIC_API_KEY = sk-ant-...
+bash -n scripts/setup-new-machine.sh
+bash -n scripts/pai-aliases.sh
+zsh -n scripts/pai-aliases.sh
+python3 -m unittest discover -s tests -v
 ```
 
-</details>
-
----
-
-## Next Steps
-
-1. **Read CONSTITUTION.md** — Understand PAI philosophy
-2. **Explore Skills** — See what's available in `~/.claude/skills/`
-3. **Create Your First Skill** — Follow the skill structure guide
-
----
-
-## Resources
-
-- **Full Documentation:** `~/.claude/skills/CORE/`
-- **Video Overview:** [PAI Video](https://youtu.be/iKwRWwabkEc)
-- **GitHub Issues:** [Report Problems](https://github.com/danielmiessler/PAI/issues)
-- **Discussions:** [Ask Questions](https://github.com/danielmiessler/PAI/discussions)
-
----
-
-## Philosophy
-
-PAI follows three principles:
-
-1. **Command Line First** — Build CLI tools, wrap with AI
-2. **Deterministic Code First** — Same input → Same output
-3. **Prompts Wrap Code** — AI orchestrates, doesn't replace
-
-**Start clean. Start small. Build out from there.**
+The tests require both Bash and Zsh. They copy the actual scripts into disposable checkouts, set `HOME` only in child processes, and block unexpected installer or network commands. They exercise setup and shell paths without installing dependencies or running live services. CI runs these fixtures on Ubuntu and macOS; this does not validate every skill's runtime dependencies or a full WSL installation.
