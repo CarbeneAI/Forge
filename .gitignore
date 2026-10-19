@@ -121,3 +121,6 @@ temp/
 *.swp
 *.swo
 *~
+
+# Private temporary settings from interrupted setup
+/.claude/.settings.tmp.*/

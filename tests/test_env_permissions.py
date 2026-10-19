@@ -25,11 +25,17 @@ class EnvFileSetupTests(unittest.TestCase):
         self.scripts.mkdir(parents=True)
         self.claude.mkdir()
         shutil.copy2(INSTALLER, self.scripts / INSTALLER.name)
+        shutil.copy2(REPO_ROOT / "scripts/configure-settings.mjs", self.scripts / "configure-settings.mjs")
+        self.real_bun = shutil.which("bun")
+        self.assertIsNotNone(self.real_bun, "Bun is required for settings fixtures")
 
         self.bin = self.root / "bin"
         self.bin.mkdir()
         bun = self.bin / "bun"
-        bun.write_text("#!/bin/sh\necho test-bun\n")
+        bun.write_text('#!/bin/sh\n'
+                       'if [ "$#" = 1 ] && [ "$1" = --version ]; then echo test-bun; exit 0; fi\n'
+                       'if [ "$#" = 5 ] && [ "$1" = --no-env-file ] && [ "$2" = run ] && [ "$3" = - ]; then exec "$FORGE_TEST_BUN_BIN" "$@"; fi\n'
+                       'exit 97\n')
         bun.chmod(0o755)
 
         self.env_file = self.claude / ".env"
@@ -39,6 +45,7 @@ class EnvFileSetupTests(unittest.TestCase):
             PATH=f"{self.bin}:/usr/bin:/bin:/usr/sbin:/sbin",
             ZDOTDIR=str(self.home),
             FORGE_TEST_ENV_FILE=str(self.env_file),
+            FORGE_TEST_BUN_BIN=self.real_bun,
         )
         for name in ("BASH_ENV", "ENV", "ZSH_VERSION", "PAI_DIR", "FORGE_REPO_DIR"):
             self.env.pop(name, None)

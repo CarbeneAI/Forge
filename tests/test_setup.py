@@ -21,7 +21,9 @@ class SetupTests(unittest.TestCase):
         self.bin = self.root / "bin"
         self.bin.mkdir()
         self.unexpected = self.root / "unexpected-commands"
-        # Only the Bun version query is permitted. Every installer/network stub
+        self.real_bun = shutil.which("bun")
+        self.assertIsNotNone(self.real_bun, "Bun is required for isolated JSON settings checks")
+        # Only the Bun version query and local settings helper are permitted. Every installer/network stub
         # records its invocation so swallowed command failures still fail tests.
         for name in ("bun", "curl", "wget", "brew", "uv", "pip", "pip3", "python3.13"):
             stub = self.bin / name
@@ -29,6 +31,8 @@ class SetupTests(unittest.TestCase):
                 '#!/bin/sh\n'
                 'if [ "${0##*/}" = bun ] && [ "$#" = 1 ] && [ "$1" = --version ]; then\n'
                 '  echo test-bun; exit 0\nfi\n'
+                'if [ "${0##*/}" = bun ] && [ "$#" = 5 ] && [ "$1" = --no-env-file ] && [ "$2" = run ] && [ "$3" = - ]; then\n'
+                '  exec "$FORGE_TEST_BUN_BIN" "$@"\nfi\n'
                 'printf "%s\\n" "$0 $*" >> "$FORGE_TEST_UNEXPECTED"\nexit 97\n'
             )
             stub.chmod(0o755)
@@ -36,7 +40,8 @@ class SetupTests(unittest.TestCase):
         # Child-only HOME and XDG directories: never source the real user's rc.
         self.env.update(HOME=str(self.home), PATH=f"{self.bin}:/usr/bin:/bin:/usr/sbin:/sbin",
                         XDG_CONFIG_HOME=str(self.home / ".config"),
-                        ZDOTDIR=str(self.home), FORGE_TEST_UNEXPECTED=str(self.unexpected))
+                        ZDOTDIR=str(self.home), FORGE_TEST_UNEXPECTED=str(self.unexpected),
+                        FORGE_TEST_BUN_BIN=self.real_bun)
         for name in ("BASH_ENV", "ENV", "ZSH_VERSION", "FORGE_REPO_DIR", "PAI_DIR"):
             self.env.pop(name, None)
         self.addCleanup(self.assert_no_installers)
@@ -48,7 +53,7 @@ class SetupTests(unittest.TestCase):
     def checkout(self, name="Forge", valid=True):
         repo = self.home / name
         (repo / "scripts").mkdir(parents=True)
-        for name in ("setup-new-machine.sh", "pai-aliases.sh"):
+        for name in ("setup-new-machine.sh", "pai-aliases.sh", "configure-settings.mjs"):
             shutil.copy2(SCRIPTS / name, repo / "scripts" / name)
         if valid:
             claude = repo / ".claude"
@@ -153,7 +158,7 @@ eval paih
             with self.subTest(shell=shell):
                 self.assert_navigation(shell, repo / "scripts/pai-aliases.sh", repo)
 
-    def test_settings_path_escapes_json_and_sed_characters(self):
+    def test_settings_path_escapes_json_and_shell_characters(self):
         self.home = self.root / "home & pipe| back\\slash quote\""
         self.home.mkdir()
         self.env.update(HOME=str(self.home), ZDOTDIR=str(self.home),
@@ -165,6 +170,31 @@ eval paih
         for shell in ("bash", "zsh"):
             with self.subTest(shell=shell):
                 self.assert_navigation(shell, self.home / ".bashrc", repo)
+
+    def test_settings_json_whitespace_and_unrelated_keys_are_preserved(self):
+        repo = self.checkout()
+        settings = repo / ".claude/settings.json"
+        for whitespace in ("", " ", "\t", "\n  "):
+            with self.subTest(whitespace=repr(whitespace)):
+                original = {"env": {"PAI_DIR": "/old/path", "OTHER": "fixture-secret"},
+                            "PAI_DIR": "unrelated top-level", "hooks": {"PAI_DIR": "unrelated nested"}}
+                settings.write_text(json.dumps(original, separators=(",", ":" + whitespace)))
+                result = self.install(repo)
+                expected = dict(original, env=dict(original["env"], PAI_DIR=str(self.home / ".claude")))
+                self.assertEqual(json.loads(settings.read_text()), expected)
+                self.assertNotIn("fixture-secret", result.stdout + result.stderr)
+
+    def test_invalid_settings_stop_before_alias_configuration(self):
+        repo = self.checkout()
+        settings = repo / ".claude/settings.json"
+        original = '{"env":{"PAI_DIR":"fixture-secret"}'
+        settings.write_text(original)
+        result = self.install(repo, check=False)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(settings.read_text(), original)
+        self.assertFalse((self.home / ".bashrc").exists())
+        self.assertNotIn("Setup Complete", result.stdout)
+        self.assertNotIn("fixture-secret", result.stdout + result.stderr)
 
     def test_existing_symlink_is_updated_without_changing_its_old_target(self):
         repo = self.checkout()

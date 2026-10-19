@@ -9,9 +9,10 @@ This is a contributor proposal for maintainer discussion, not an adopted release
 - Exercise the real scripts in disposable homes on Ubuntu and macOS, including special characters, reruns, and missing local settings.
 - Stop `pai-sync` and `pai-edit` at failed checkout, editor, pull, status, add,
   commit, or push operations while preserving the caller directory.
-- Run 23 offline tests: eight setup/navigation tests, five Git helper tests, and ten credential-file tests,
+- Run 35 offline tests: ten setup/navigation tests, five Git helper tests, ten credential-file tests, and ten JSON settings tests,
   with Bash and Zsh subcases. Git/editor fixtures verify ordered failure handling
   without real pushes or mutations to the user's home.
+- Parse existing settings structurally, update only `env.PAI_DIR`, preserve unrelated parsed values and file mode, and reject malformed settings without rewriting them.
 - Align the README, Quick Start, and coding-agent checks with the shipped installer. Machine-local settings and hook registration remain separate setup responsibilities.
 
 These checks do not validate every skill, install the full runtime, or establish WSL compatibility. See [Quick Start](docs/QUICKSTART.md) and [setup CI](.github/workflows/setup-tests.yml) for the current checks.

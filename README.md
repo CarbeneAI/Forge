@@ -208,8 +208,8 @@ The setup script will:
 
 - Check that the checkout contains `.claude` before changing your home configuration.
 - Link `~/.claude` to the checkout's `.claude`, backing up an existing directory as `~/.claude.backup.<timestamp>`.
-- Update an existing `PAI_DIR` entry in `settings.json` to `~/.claude`'s absolute path.
 - Install Bun if it is missing.
+- Use Bun to update an existing `env.PAI_DIR` string in `settings.json` to `~/.claude`'s absolute path.
 - Add a source line for `scripts/pai-aliases.sh` to `.zshrc` if present, otherwise `.bashrc`.
 - Create `.env` from its template if no `.env` exists, and create local history directories.
 - Create a PyRIT virtual environment if its skill is present and `uv` or Python 3.13 is available.
@@ -217,6 +217,8 @@ The setup script will:
 Rerunning preserves an existing `.env`, reuses the configured symlink, and avoids adding a duplicate alias source line. Existing lines mentioning `pai-aliases.sh` are kept; update that line manually if you move the checkout. `FORGE_REPO_DIR` identifies the checkout for shell helpers, while `PAI_DIR` remains the runtime configuration path at `~/.claude`.
 
 `settings.json` is machine-local and absent from a fresh clone. The installer warns when it is missing and does not create settings or register hooks. Review and migrate your previous settings from the reported backup, or configure Claude Code separately.
+
+The JSON helper handles compact and multiline settings, preserves unrelated parsed values, and changes only `env.PAI_DIR`. It rejects invalid JSON, invalid field types, unsafe integers, and symlink/nonregular settings files without rewriting them. A changed file is formatted as two-space JSON and atomically replaced with its original POSIX permissions. Missing optional entries and already-correct settings remain unchanged. The installer stops if the helper fails. Do not edit settings concurrently with setup; earlier symlink, environment-file, or dependency steps are not rolled back. See [Quick Start](docs/QUICKSTART.md#configure-machine-local-settings) for details.
 
 The installer does not install Claude Code, Node.js, or SemanticMemory's native SQLite dependencies. Follow individual skill requirements before using those features. See the [Quick Start guide](docs/QUICKSTART.md) for setup checks and troubleshooting.
 
@@ -521,7 +523,7 @@ All core docs live in `.claude/skills/CORE/`:
 
 ### Environment Variables (settings.json)
 
-`~/.claude/settings.json` is gitignored and not included in a fresh clone. Review or configure your local settings separately, including any hooks and permissions you need. The installer only updates an existing `PAI_DIR` entry. This example shows environment values, not a complete hook configuration:
+`~/.claude/settings.json` is gitignored and not included in a fresh clone. Review or configure your local settings separately, including any hooks and permissions you need. The installer only updates an existing `env.PAI_DIR` string through its JSON settings helper. This example shows environment values, not a complete hook configuration:
 
 ```json
 {

@@ -27,7 +27,7 @@ The script finds the checkout from its own file location, so the current working
 |------|--------------------|
 | Checkout validation | Requires a `.claude` directory before changing home configuration. |
 | `~/.claude` | Creates a symlink to the checkout's `.claude`; backs up an existing directory as `~/.claude.backup.<timestamp>`. Updates an existing symlink if it points elsewhere. |
-| `.claude/settings.json` | Updates an existing `PAI_DIR` entry to the absolute path of `~/.claude`. Warns when settings are absent; does not create the file or register hooks. |
+| `.claude/settings.json` | Uses Bun to update an existing `env.PAI_DIR` string to the absolute path of `~/.claude`. Warns when settings or the optional entry are absent; does not create the file or register hooks. |
 | `.claude/.env` | Preserves existing regular-file contents and mode. Creates a missing file privately with mode `0600`; rejects symlink and non-regular destinations. |
 | Bun | Reuses an installed executable, or attempts installation through Homebrew on macOS when available, otherwise through the Bun installer. |
 | Shell configuration | Adds a safely quoted source line for `scripts/pai-aliases.sh` to an existing `.zshrc`, otherwise `.bashrc`. Keeps any existing line mentioning `pai-aliases.sh`. |
@@ -41,6 +41,12 @@ The script does not install Node.js or build SemanticMemory's native SQLite depe
 `settings.json` is gitignored and is not supplied in a fresh clone. A completed installer run establishes the directory layout; it does not enable the repository's hooks by itself. Review and migrate previous settings from the backup path printed by setup, or configure Claude Code separately. Include only the hooks and permissions you intend to use.
 
 When using Forge's runtime helpers, set `env.PAI_DIR` to your absolute `~/.claude` path. The installer can update that entry on subsequent runs once it exists. The README's [configuration example](../README.md#configuration) shows environment values; it is not a complete hook configuration.
+
+The installer parses JSON with Bun after ensuring Bun is available. Compact, tabbed, and multiline JSON are accepted. It updates only the existing `env.PAI_DIR` string, preserves unrelated parsed settings, and formats changed files as two-space JSON. Missing files, missing entries, and already-correct values are left untouched. Invalid JSON, non-object root/env fields, non-string `env.PAI_DIR`, nonfinite numbers, and integers outside JavaScript's safe range fail without rewriting settings. Settings must be regular files; symlinks are rejected.
+
+A replacement is prepared inside a private `.settings.tmp.*` directory beside the settings file, then published by atomic rename with the original ordinary POSIX permission bits. Interrupted temporary directories are ignored by Git and may require local cleanup. Ownership, ACLs, extended attributes, concurrent editing, and crash durability are not guaranteed by this procedure. Close other settings editors before running setup. A reported cleanup failure may occur after the new settings file was published; inspect the file before retrying.
+
+The installer is not transactional: a later settings error does not undo an earlier symlink change, environment-file creation, or dependency installation. Error messages never print settings contents. No hooks or configured commands are executed by the JSON helper.
 
 ### Rerun or move a checkout
 
@@ -105,7 +111,7 @@ Explore the checked-in [CORE skill](../.claude/skills/CORE/SKILL.md), [skill str
 
 **Settings missing or hooks report an old runtime path:** A fresh clone has no `settings.json`. Review and migrate previous settings from the reported backup, or configure Claude Code separately. If the file already contains `env.PAI_DIR`, rerun the installer to update its value to the absolute path of your `~/.claude` symlink. Rerunning does not generate settings or hook registrations.
 
-**Bun unavailable:** Check `command -v bun` in a new terminal. Setup reports installation problems; the hook self-test requires Bun on `PATH`.
+**Bun unavailable:** Check `command -v bun` in a new terminal. The settings helper requires Bun after the dependency-install step; setup stops if it cannot run. Install Bun and rerun setup. The hook self-test also requires Bun on `PATH`.
 
 For repository issues, use [CarbeneAI/Forge issues](https://github.com/CarbeneAI/Forge/issues).
 
@@ -120,12 +126,13 @@ zsh -n scripts/pai-aliases.sh
 python3 -m unittest discover -s tests -v
 ```
 
-The 23 tests require both Bash and Zsh. Ten exercise private credential creation,
-preservation, race handling, failure reporting, and ignore rules. Eight exercise setup and navigation;
-five exercise Git helper success and failure paths with fake Git and editor
-commands, including unchanged caller directories and no home mutations. No real
-Git push is invoked. Fixtures copy the actual scripts into disposable checkouts,
-set `HOME` only in child processes, and block unexpected installer or network
-commands. They exercise setup and shell paths without installing dependencies
-or running live services. CI runs these fixtures on Ubuntu and macOS; this does
-not validate every skill's runtime dependencies or a full WSL installation.
+The 35 tests require Bash, Zsh, Python 3, and Bun (CI pins Bun 1.3.14).
+Ten exercise private credential creation, preservation, races, failures, and
+ignore rules. Ten exercise setup/navigation, five exercise Git helper behavior,
+and ten exercise the JSON helper's parsing, preservation, permissions, and I/O
+failures. Settings fixtures invoke the real local Bun helper; network, package
+installation, Git, and editor operations are stubbed as appropriate. No real
+Git push is invoked. Fixtures copy scripts into disposable checkouts and set
+`HOME` only in child processes. They do not install skill dependencies or call
+live services. CI runs these checks on Ubuntu and macOS; this does not validate
+every skill's dependencies or a full WSL installation.

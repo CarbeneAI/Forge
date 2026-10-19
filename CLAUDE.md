@@ -212,8 +212,12 @@ source ~/.bashrc
 
 Run `bash -n scripts/setup-new-machine.sh`, `bash -n scripts/pai-aliases.sh`,
 `zsh -n scripts/pai-aliases.sh`, and `python3 -B -m unittest discover -s tests -v`.
-The 23 tests use disposable homes and fake external commands, including ten
-credential-file permission, race, failure, and ignore checks. Git helper checks
+The 35 tests require Bash, Zsh, Python 3, and Bun (CI pins 1.3.14). They use
+disposable homes and fake external commands, including ten credential-file
+checks and ten JSON helper checks. Settings fixtures run the real local Bun
+helper, with no hooks or external requests. Preserve only the documented
+`env.PAI_DIR` mutation, private staging, failure reporting, and ordinary file
+permissions; never print configuration contents. Git helper checks
 never invoke a real push. `pai-sync` and `pai-edit` return the first failure and
 preserve the caller directory. A failed operation does not roll back earlier
 successful edits or Git changes. These fixtures do not validate live services,

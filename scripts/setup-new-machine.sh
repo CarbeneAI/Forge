@@ -22,7 +22,7 @@ CLAUDE_DIR="$HOME/.claude"
 # -------------------------------------------
 # Step 1: Verify checkout configuration exists
 # -------------------------------------------
-echo "[1/7] Checking checkout configuration..."
+echo "[1/9] Checking checkout configuration..."
 if [ ! -d "$FORGE_REPO_DIR/.claude" ]; then
     echo "ERROR: Checkout configuration not found at $FORGE_REPO_DIR/.claude"
     echo "Run this script from a complete Forge checkout."
@@ -34,7 +34,7 @@ echo "  OK: Checkout configuration found at $FORGE_REPO_DIR/.claude"
 # Step 2: Handle existing .claude directory
 # -------------------------------------------
 echo ""
-echo "[2/7] Configuring ~/.claude symlink..."
+echo "[2/9] Configuring ~/.claude symlink..."
 
 if [ -L "$CLAUDE_DIR" ]; then
     # It's already a symlink
@@ -69,42 +69,10 @@ else
 fi
 
 # -------------------------------------------
-# Step 3: Configure PAI_DIR in settings.json
+# Step 3: Create .env file from template
 # -------------------------------------------
 echo ""
-echo "[3/8] Configuring PAI_DIR in settings.json..."
-
-SETTINGS_FILE="$FORGE_REPO_DIR/.claude/settings.json"
-ACTUAL_CLAUDE_DIR="$HOME/.claude"
-
-if [ -f "$SETTINGS_FILE" ]; then
-    # Escape the path for JSON first, then for sed's replacement syntax.
-    settings_path=$(printf '%s' "$ACTUAL_CLAUDE_DIR" | sed 's/\\/\\\\/g; s/"/\\"/g' | sed 's/[\\&|]/\\&/g')
-    # Match JSON escapes too, so rerunning with quotes/backslashes is safe.
-    settings_pattern='"PAI_DIR": "[^"\\]*\(\\.[^"\\]*\)*"'
-    # Update PAI_DIR to this machine's path
-    if grep -q '"PAI_DIR":' "$SETTINGS_FILE"; then
-        # Use sed to replace the PAI_DIR value
-        if [[ "$OSTYPE" == "darwin"* ]]; then
-            # macOS sed requires different syntax
-            sed -i '' "s|$settings_pattern|\"PAI_DIR\": \"$settings_path\"|g" "$SETTINGS_FILE"
-        else
-            # Linux sed
-            sed -i "s|$settings_pattern|\"PAI_DIR\": \"$settings_path\"|g" "$SETTINGS_FILE"
-        fi
-        echo "  OK: PAI_DIR set to $ACTUAL_CLAUDE_DIR"
-    else
-        echo "  WARNING: PAI_DIR not found in settings.json"
-    fi
-else
-    echo "  WARNING: settings.json not found"
-fi
-
-# -------------------------------------------
-# Step 4: Create .env file from template
-# -------------------------------------------
-echo ""
-echo "[4/8] Setting up environment file..."
+echo "[3/9] Setting up environment file..."
 
 ENV_FILE="$FORGE_REPO_DIR/.claude/.env"
 ENV_EXAMPLE="$FORGE_REPO_DIR/.claude/.env.example"
@@ -170,10 +138,10 @@ EOF
 fi
 
 # -------------------------------------------
-# Step 5: Install Bun (if not installed)
+# Step 4: Install Bun (if not installed)
 # -------------------------------------------
 echo ""
-echo "[5/8] Checking Bun installation..."
+echo "[4/9] Checking Bun installation..."
 
 if command -v bun &> /dev/null; then
     echo "  OK: Bun is installed ($(bun --version))"
@@ -205,10 +173,24 @@ else
 fi
 
 # -------------------------------------------
+# Step 5: Configure the existing runtime setting with Bun's JSON parser
+# -------------------------------------------
+echo ""
+echo "[5/9] Configuring PAI_DIR in settings.json..."
+if ! command -v bun > /dev/null 2>&1; then
+    echo "ERROR: Bun is required to update settings.json. Install Bun, then rerun setup." >&2
+    exit 1
+fi
+# Bun normalizes backslashes in an entrypoint filename. Read the trusted helper
+# through shell redirection so valid Unix checkout paths remain literal.
+bun --no-env-file run - "$FORGE_REPO_DIR/.claude/settings.json" "$HOME/.claude" \
+    < "$FORGE_REPO_DIR/scripts/configure-settings.mjs"
+
+# -------------------------------------------
 # Step 6: Setup shell aliases
 # -------------------------------------------
 echo ""
-echo "[6/8] Setting up shell aliases..."
+echo "[6/9] Setting up shell aliases..."
 
 ALIAS_FILE="$FORGE_REPO_DIR/scripts/pai-aliases.sh"
 # Bash %q produces a source path safe for both Bash and Zsh rc files.
