@@ -57,24 +57,29 @@ pai-commit() {
 }
 
 # Full sync (pull then push)
-pai-sync() {
+pai-sync() (
     echo "Pulling latest changes..."
-    cd "$FORGE_REPO_DIR" && git pull origin main
+    cd "$FORGE_REPO_DIR" || return $?
+    git pull origin main || return $?
 
-    if [ -n "$(git status --porcelain)" ]; then
+    local changes
+    changes=$(git status --porcelain) || return $?
+    if [ -n "$changes" ]; then
         echo "Pushing local changes..."
-        git add -A && git commit -m "sync: $(date +%Y-%m-%d\ %H:%M)" && git push origin main
+        git add -A || return $?
+        git commit -m "sync: $(date +%Y-%m-%d\ %H:%M)" || return $?
+        git push origin main || return $?
     else
         echo "No local changes to push."
     fi
-}
+)
 
 # -------------------------------------------
 # Quick Edit Functions
 # -------------------------------------------
 
 # Edit a file and push changes
-pai-edit() {
+pai-edit() (
     if [ -z "$1" ]; then
         echo "Usage: pai-edit <file-path>"
         echo "Example: pai-edit .claude/skills/MySkill/SKILL.md"
@@ -87,13 +92,12 @@ pai-edit() {
         file="$FORGE_REPO_DIR/$file"
     fi
 
-    ${EDITOR:-nano} "$file"
-
-    cd "$FORGE_REPO_DIR"
-    git add "$file"
-    git commit -m "update: $(basename "$file")"
-    git push origin main
-}
+    cd "$FORGE_REPO_DIR" || return $?
+    ${EDITOR:-nano} "$file" || return $?
+    git add -- "$file" || return $?
+    git commit -m "update: $(basename "$file")" || return $?
+    git push origin main || return $?
+)
 
 # Edit a skill's SKILL.md
 pai-edit-skill() {

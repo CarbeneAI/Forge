@@ -207,3 +207,13 @@ If `bun` or `claude` commands aren't found after setup:
 ```bash
 source ~/.bashrc
 ```
+
+## Offline shell development checks
+
+Run `bash -n scripts/setup-new-machine.sh`, `bash -n scripts/pai-aliases.sh`,
+`zsh -n scripts/pai-aliases.sh`, and `python3 -B -m unittest discover -s tests -v`.
+The 13 tests use disposable homes and fake external commands; Git helper checks
+never invoke a real push. `pai-sync` and `pai-edit` return the first failure and
+preserve the caller directory. A failed operation does not roll back earlier
+successful edits or Git changes. These fixtures do not validate live services,
+full skill dependencies, or WSL. See `docs/QUICKSTART.md` for setup limits.

@@ -255,12 +255,18 @@ pai-test     # Optional broader diagnostic; also probes a local voice service
 | `pai-status` | Git status |
 | `pai-pull` | Pull latest from GitHub |
 | `pai-push` | Commit and push all changes |
-| `pai-sync` | Pull then push (full sync) |
+| `pai-sync` | Pull, then commit and push local changes if present |
 | `pai-check` | Verify configuration |
 | `pai-test` | Optional broader runtime diagnostic |
 | `pai-skills` | List all skills |
 | `pai-agents` | List all agents |
 | `pai-new-skill <name>` | Create new skill from template |
+
+`pai-sync` and `pai-edit` stop when the checkout, editor, or a Git operation
+fails and return that failure status. They preserve the caller's working
+directory. A failed commit or push can leave staged or committed local changes;
+review `git status` before retrying. The [offline checks](docs/QUICKSTART.md#for-contributors-and-coding-agents)
+exercise failure paths with fake Git and editor commands.
 
 ---
 

@@ -9,7 +9,7 @@ on:
       - ROADMAP.md
       - scripts/setup-new-machine.sh
       - scripts/pai-aliases.sh
-      - tests/test_setup.py
+      - tests/**
       - .github/workflows/setup-tests.yml
 
 permissions:
@@ -39,5 +39,5 @@ jobs:
           bash -n scripts/setup-new-machine.sh
           bash -n scripts/pai-aliases.sh
           zsh -n scripts/pai-aliases.sh
-      - name: Run isolated setup fixtures
+      - name: Run isolated setup and Git helper fixtures
         run: python -m unittest discover -s tests -v

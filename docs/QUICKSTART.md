@@ -74,6 +74,11 @@ For Zsh, use `source "$HOME/.zshrc"`. The existing public shell commands use the
 
 The alias definitions live in [`scripts/pai-aliases.sh`](../scripts/pai-aliases.sh). Review them before using Git helpers such as `pai-push`, which stages, commits, and pushes local changes.
 
+`pai-sync` and `pai-edit` preserve your working directory and stop at the first
+failed checkout, editor, or Git operation. They return nonzero on failure; a
+failed status query is not treated as a clean checkout. Review `git status`
+before retrying because earlier successful operations are not rolled back.
+
 ## Configure optional services
 
 Edit the environment file already created by setup:
@@ -115,4 +120,11 @@ zsh -n scripts/pai-aliases.sh
 python3 -m unittest discover -s tests -v
 ```
 
-The tests require both Bash and Zsh. They copy the actual scripts into disposable checkouts, set `HOME` only in child processes, and block unexpected installer or network commands. They exercise setup and shell paths without installing dependencies or running live services. CI runs these fixtures on Ubuntu and macOS; this does not validate every skill's runtime dependencies or a full WSL installation.
+The 13 tests require both Bash and Zsh. Eight exercise setup and navigation;
+five exercise Git helper success and failure paths with fake Git and editor
+commands, including unchanged caller directories and no home mutations. No real
+Git push is invoked. Fixtures copy the actual scripts into disposable checkouts,
+set `HOME` only in child processes, and block unexpected installer or network
+commands. They exercise setup and shell paths without installing dependencies
+or running live services. CI runs these fixtures on Ubuntu and macOS; this does
+not validate every skill's runtime dependencies or a full WSL installation.
