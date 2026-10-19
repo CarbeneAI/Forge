@@ -136,12 +136,11 @@ zsh -n scripts/pai-aliases.sh
 python3 -m unittest discover -s tests -v
 ```
 
-The 48 tests require Bash, Zsh, Python 3, Git, and Bun (CI pins Bun 1.3.14).
-Ten exercise private credential creation, preservation, races, failures, and
-ignore rules. Thirteen exercise setup/navigation and PyRIT retry behavior, five
-exercise Git helper behavior,
-ten exercise the JSON helper's parsing, preservation, permissions, and I/O
-failures, and ten exercise setup diagnostics. The diagnostic fixtures cover both
+The suite requires Bash, Zsh, Python 3, Git, and Bun (CI pins Bun 1.3.14).
+It exercises private credential creation, preservation, races, failures, and
+ignore rules; setup/navigation and PyRIT retries; Git helper behavior; the JSON
+helper's parsing, preservation, permissions, and I/O failures; and setup
+diagnostics. The command reports the current test count. Diagnostic fixtures cover both
 shells, required failures, warning-only states, and preserved caller directories.
 A disposable Git repository verifies unchanged index content and modification
 time and that a configured fsmonitor hook is not executed. Settings fixtures
