@@ -28,9 +28,9 @@ This file provides guidance to Claude Code when working in this repository.
 │   │   ├── capture-tool-output.ts
 │   │   ├── stop-hook.ts
 │   │   └── lib/pai-paths.ts   # Centralized path resolution
-│   ├── skills/                # 120 domain-specific capabilities
+│   ├── skills/                # 128 tracked skill definitions
 │   │   ├── CORE/              # Identity, architecture, principles
-│   │   ├── Fabric/            # 248 native AI patterns
+│   │   ├── Fabric/            # 234 native pattern files
 │   │   ├── Research/          # Multi-source research workflows
 │   │   ├── Private/           # Local Ollama privacy routing
 │   │   ├── Observability/     # Real-time agent monitoring dashboard
@@ -90,7 +90,7 @@ skills/SkillName/
 
 | Category | Skills |
 |----------|--------|
-| **Core** | CORE, Fabric (248 patterns), Research, Observability |
+| **Core** | CORE, Fabric (234 native pattern files), Research, Observability |
 | **Security** | OSINT, RedTeam, pentest-workflow, Ffuf, WazuhDashboard, CSO, CybersecurityPlaybooks (24 ATT&CK playbooks) |
 | **Development** | DevTeam, CodingAgent, CreateCLI, test-driven-development |
 | **Business** | ceo-advisor, cto-advisor, cfo-advisor, pricing, mvp, validate-idea |
@@ -173,7 +173,7 @@ COMPLETED: [12 words max]
 
 ## Fabric Patterns
 
-248+ patterns run **natively** within Claude Code (no CLI spawning). Only use `fabric` CLI for YouTube transcripts (`-y`) or pattern updates (`-U`).
+The 234 tracked native pattern files can be read into Claude Code context without invoking the Fabric CLI. See [the repository inventory](docs/REPOSITORY-INVENTORY.md) for the counting rule; this is a file inventory, not validation of every pattern. Only use `fabric` CLI for YouTube transcripts (`-y`) or pattern updates (`-U`).
 
 ## Security Protocols
 
@@ -181,7 +181,7 @@ COMPLETED: [12 words max]
 2. `.env` is gitignored by default
 3. Rotate API keys regularly
 4. Use minimum required permissions for each API key
-5. All code changes pass through Nehemiah (security auditor) in DevTeam workflow
+5. DevTeam instructs contributors to involve Nehemiah for security review. This is workflow guidance; configure repository checks and machine-local hooks separately to enforce review gates.
 
 ## Creating a New Skill
 

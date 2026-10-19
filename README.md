@@ -13,12 +13,12 @@
 [![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)](https://github.com/CarbeneAI/Forge/releases)
 [![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Powered-8B5CF6?style=for-the-badge)](https://claude.ai/code)
-[![Platform](https://img.shields.io/badge/Linux%20|%20macOS%20|%20WSL-supported-orange?style=for-the-badge)]()
+[![Setup tests](https://img.shields.io/badge/setup_tests-Linux%20%7C%20macOS-orange?style=for-the-badge)](.github/workflows/setup-tests.yml)
 
 
 <br/>
 
-[**Quick Start**](#-quick-start) · [**Skills**](#-skills) · [**Agents**](#-agents) · [**Architecture**](#-architecture) · [**Documentation**](#-documentation)
+[**Quick Start**](#quick-start) · [**Skills**](#skills) · [**Agents**](#agents) · [**Architecture**](#architecture) · [**Documentation**](#documentation)
 
 </div>
 
@@ -48,7 +48,7 @@ You <-> Claude Code <-> Forge Configuration <-> Claude AI
 
 | Component | What It Does |
 |-----------|-------------|
-| **Skills** | Self-contained AI capabilities with automatic trigger routing (138 included) |
+| **Skills** | Self-contained AI capabilities with automatic trigger routing (128 tracked skill definitions; see the inventory below) |
 | **Agents** | Specialized AI personalities — architect, engineer, security auditor, researcher |
 | **Hooks** | Event-driven TypeScript automation (session start/end, tool use, context compression) |
 | **History** | Automatic documentation system that captures sessions, learnings, and research |
@@ -67,13 +67,13 @@ Forge remembers your projects, preferences, decisions, and context between conve
 
 Launch research across 5+ AI models simultaneously — Claude, Gemini, Perplexity, Grok, and local Ollama. Each brings different strengths. Results are synthesized into a single, comprehensive analysis. One prompt, five perspectives.
 
-### 138 Skills with Auto-Activation
+### 128 Skill Definitions
 
 Say "research VitePress alternatives" and the Research skill activates automatically. Say "create a CLI tool" and CreateCLI takes over. No slash commands to memorize — skills route based on natural language triggers. Categories span security, AI red-teaming, compliance (15 GRC frameworks), development, business advisory, document processing, QA, and more.
 
-### 20+ Specialized Agents
+### 27 Agent Definitions
 
-Not generic "assistants" — purpose-built agent personalities with distinct expertise. A software architect (Bezalel) who writes PRDs. A security auditor (Nehemiah) who reviews every PR for OWASP compliance. A penetration tester (Ehud). An incident responder (Gideon). Each agent knows its domain deeply.
+The checkout includes agent definitions for distinct roles: a software architect (Bezalel), a security auditor (Nehemiah), a penetration tester (Ehud), and an incident responder (Gideon). Their instructions guide delegated work; adding an agent definition does not automatically schedule a review or enforce a repository gate.
 
 ### Real-Time Observability
 
@@ -81,7 +81,7 @@ Live WebSocket dashboard showing agent activity, tool invocations, and event tim
 
 ### Privacy-First Local Routing
 
-Route sensitive prompts to your local Ollama instance — data never leaves your machine. Suitable for HIPAA, PCI, and client-confidential work. One command: `/private`.
+The `/private` skill instructs Claude Code to send a prompt to a local Ollama instance. Verify the model endpoint, tool behavior, and surrounding session data flow before supplying confidential information. A local model route alone does not establish a compliance guarantee.
 
 ### Automatic Work Capture
 
@@ -93,13 +93,13 @@ Every session, every learning, every research output is automatically documented
 
 Most AI tools treat security as an afterthought — a linter you run after the code is written, a review you do when you remember. Forge embeds security into every stage of the development lifecycle.
 
-### Mandatory Security Gates
+### Security Review Workflow
 
-Every code change passes through **Nehemiah** (security auditor agent) before it ships. This isn't optional. OWASP Top 10 compliance checking, SAST analysis, authentication flow review, and dependency vulnerability scanning happen automatically as part of the DevTeam workflow.
+**Nehemiah** is the security-review role in the DevTeam instructions. Using that workflow can guide code and dependency review, but the checked-in agent definition does not enforce a repository merge gate. Configure and verify the relevant hooks, tools, and CI separately; a fresh clone does not include machine-local hook registrations.
 
 ### Compliance Agents on Demand
 
-**Daniel** (Chief Compliance Officer) covers **15 GRC frameworks** out of the box: ISO 27001, SOC 2, FedRAMP, GDPR, HIPAA, NIST CSF, PCI DSS, TSA Cybersecurity, ISO 27701, ISO 42001, DORA, DPDPA (India), CMMC 2.0, NIST AI RMF, and SWIFT CSP. Need to verify your application meets regulatory requirements? Ask Daniel — he invokes the matching framework skill and produces audit-grade findings benchmarked at 95% accuracy against the source standards.
+**Daniel** (Chief Compliance Officer) covers **15 GRC frameworks** out of the box: ISO 27001, SOC 2, FedRAMP, GDPR, HIPAA, NIST CSF, PCI DSS, TSA Cybersecurity, ISO 27701, ISO 42001, DORA, DPDPA (India), CMMC 2.0, NIST AI RMF, and SWIFT CSP. Daniel provides framework-oriented review guidance. Treat generated findings as drafts to verify against the applicable source standards; this repository does not provide a reproducible benchmark supporting a numeric accuracy guarantee.
 
 ### AI Red-Teaming Built In
 
@@ -115,11 +115,11 @@ When production breaks, **Gideon** (incident responder) activates — crisis man
 
 ### Privacy by Design
 
-The **Private** skill routes sensitive queries to local models (Ollama/Gemma4) that run on your hardware. Client data, financial projections, medical records — nothing touches external APIs. Combined with the two-repository pattern (private config vs. public code), secrets never leak.
+The **Private** skill describes a local Ollama route. That instruction does not sandbox Claude Code, other skills, or external tools. Keep private configuration separate from public code and verify the actual data flow; neither a prompt instruction nor an ignore rule guarantees that secrets cannot leave the machine.
 
 ### Protected File System
 
-Critical configuration files are tracked in `.pai-protected.json` with automated validation. API keys live in `.env` (always gitignored). Every `git push` is preceded by sensitive data checks. The system is designed to make accidental exposure difficult.
+The checked-in `validate-protected.ts` hook expects a machine-local `.pai-protected.json` manifest at the checkout root, which is not included in a fresh clone. Configure its manifest and hook registration before relying on it. The public `pai-*` Git helpers invoke ordinary Git commands and do not themselves run a secret scanner. `.env` ignore rules protect untracked files at covered paths; they do not remove already tracked secrets or cover every custom credential path.
 
 ### Security Skill Arsenal
 
@@ -138,7 +138,7 @@ Critical configuration files are tracked in `.pai-protected.json` with automated
 
 ### Compliance Skill Arsenal — 15 GRC Frameworks
 
-Daniel (CCO agent) maps every client request to the matching framework skill. Each carries article-cited guidance benchmarked at 95% accuracy against source standards.
+Daniel (CCO agent) maps every client request to the matching framework skill. The skills provide framework-oriented guidance; their presence does not establish validated accuracy or compliance.
 
 | Framework | Skill | Coverage |
 |-----------|-------|----------|
@@ -167,7 +167,7 @@ Daniel (CCO agent) maps every client request to the matching framework skill. Ea
 | **Ehud** | Penetration tester | Finds what scanners miss — including AI red-teaming via PyRIT |
 | **Gideon** | Incident responder | Minimizes blast radius when things break |
 
-> **The difference:** Other AI tools help you write code faster. Forge helps you write code that's **secure by default** — with the same depth of security review that enterprises pay six figures for, built into your personal development workflow.
+> Forge supplies review instructions and supporting tools. Validate the configured checks and review their findings before relying on them for a deployment.
 
 ---
 
@@ -192,7 +192,7 @@ Install and authenticate Claude Code separately before starting `claude`.
 
 ### Windows (WSL)
 
-Run the Linux instructions inside WSL Ubuntu. The installer is a Bash script; run it in the Linux shell rather than PowerShell.
+For an experimental WSL setup, run the Linux instructions inside WSL Ubuntu. The installer is a Bash script; run it in the Linux shell rather than PowerShell. CI covers isolated setup fixtures on Ubuntu and macOS, not a full WSL installation or every skill integration.
 
 If WSL is not installed, run this in PowerShell as Administrator:
 
@@ -284,15 +284,17 @@ exercise failure paths with fake Git and editor commands.
 
 Skills are self-contained AI capability packages that activate automatically based on trigger words in your requests. Each skill contains routing logic, workflows, reference docs, and CLI tools.
 
-### Included Skills (120)
+### Included Skills (128)
+
+Counts describe tracked definitions, not tested or enabled integrations. See [the repository inventory](docs/REPOSITORY-INVENTORY.md) for the counting rules and a reproducible command. The category table below is a selected overview.
 
 | Category | Skills |
 |----------|--------|
-| **Core** | CORE (identity/config), Fabric (248 AI patterns), Research (multi-source), Observability (real-time dashboard) |
+| **Core** | CORE (identity/config), Fabric (234 native pattern files), Research (multi-source), Observability (real-time dashboard) |
 | **Privacy** | Private (route to local Ollama/Gemma4), OllamaResearcher (local AI research) |
 | **Security** | OSINT, RedTeam, pentest-workflow, Ffuf, Naabu, WazuhDashboard, CSO, CybersecurityPlaybooks (24 ATT&CK-mapped offensive playbooks), PAIAudit |
 | **AI Red-Team** | PyRIT (Microsoft Python Risk Identification Tool — jailbreaks, prompt injection, Crescendo/TAP/Skeleton Key, content-harm scoring) |
-| **Compliance** | ISO27001, SOC2, FedRAMP, GDPRCompliance, HIPAACompliance, NISTCSF, PCICompliance, TSACompliance, ISO27701, ISO42001, DPDPA, DORA, CMMC, NISTAIRMF, SWIFTCSP — 15 frameworks at 95% accuracy |
+| **Compliance** | ISO27001, SOC2, FedRAMP, GDPRCompliance, HIPAACompliance, NISTCSF, PCICompliance, TSACompliance, ISO27701, ISO42001, DPDPA, DORA, CMMC, NISTAIRMF, SWIFTCSP; guidance for 15 frameworks |
 | **Development** | DevTeam (multi-agent dev), CodingAgent, CreateCLI, test-driven-development |
 | **Web** | BrightData (4-tier scraping), browse (headless Playwright), connect-chrome |
 | **Business** | ceo-advisor, cto-advisor, cfo-advisor, AlexHormoziPitch, pricing, mvp, validate-idea |
@@ -411,9 +413,9 @@ Full philosophy: [`.claude/skills/CORE/CONSTITUTION.md`](.claude/skills/CORE/CON
 │   │   ├── capture-tool-output.ts
 │   │   ├── stop-hook.ts
 │   │   └── lib/pai-paths.ts   # Centralized path resolution
-│   ├── skills/                # 120 domain-specific capabilities
+│   ├── skills/                # 128 tracked skill definitions
 │   │   ├── CORE/              # Identity, architecture, principles
-│   │   ├── Fabric/            # 248 native AI patterns
+│   │   ├── Fabric/            # 234 native pattern files
 │   │   ├── Research/          # Multi-source research workflows
 │   │   ├── Private/           # Local Ollama privacy routing
 │   │   ├── Observability/     # Real-time agent monitoring dashboard
@@ -456,13 +458,13 @@ history/
 
 ### Privacy Mode
 
-Route sensitive queries to your local Ollama server — data never leaves your machine:
+The `/private` skill forwards a prompt from the Claude Code session to an Ollama endpoint:
 
 ```
-/private Analyze these financial projections for Client X
+/private Explain this synthetic example
 ```
 
-Uses Gemma4 31B (or any model on your Ollama instance) via `localhost:11434`. Suitable for HIPAA/PCI-sensitive data.
+The query tool defaults to `http://localhost:11434`, but `OLLAMA_URL` can select another server. Content already entered in the Claude Code session is visible to that session; routing it to Ollama afterward does not remove it. Review [the skill's data-flow limits](.claude/skills/Private/SKILL.md#data-flow-and-privacy) before using confidential material.
 
 ---
 
@@ -507,7 +509,7 @@ pai-push   # Save changes
 | **AI Platform** | Claude Code |
 | **Format** | Markdown |
 
-> **Why two runtimes?** Most Forge tools run on Bun for speed. SemanticMemory uses `better-sqlite3` (via `npx tsx`) because Bun's built-in SQLite cannot load native extensions (like sqlite-vec) on macOS. This ensures Forge works identically on macOS, Linux, and WSL.
+> **Why two runtimes?** Most Forge tools use Bun. SemanticMemory uses `better-sqlite3` through Node.js/tsx to load the `sqlite-vec` extension. Setup CI tests the installer and shell helpers on Ubuntu and macOS; it does not validate SemanticMemory's native dependencies, every skill, or WSL. See [Quick Start](docs/QUICKSTART.md#for-contributors-and-coding-agents) for the tested scope.
 
 ---
 
@@ -603,15 +605,15 @@ Forge started as a fork of [**Daniel Miessler's Personal AI Infrastructure (PAI)
 
 If you haven't read Dan's [**The Real Internet of Things**](https://danielmiessler.com/blog/real-internet-of-things), start there. It's the "why" behind this entire project. His 13 founding principles, skills-as-containers architecture, and CLI-first philosophy remain at the heart of Forge.
 
-Dan is also the creator of [**Fabric**](https://github.com/danielmiessler/fabric) — the AI pattern framework with 248+ patterns that ships natively inside Forge. His work on making AI practical and accessible has shaped how thousands of people think about personal AI systems.
+Dan is also the creator of [**Fabric**](https://github.com/danielmiessler/fabric), the AI pattern framework whose prompts are included for native use inside Forge. His work on making AI practical and accessible has shaped how thousands of people think about personal AI systems.
 
 [**Jason Haddix**](https://www.bughuntermethodology.com/) is the other half of the lineage. His **Bug Hunter Methodology** is the offensive-security playbook that shaped how Forge's pentest-workflow, the CybersecurityPlaybooks skill (24 ATT&CK-mapped playbooks), and the companion Talon project think about reconnaissance, enumeration, and attack-path mapping. If Dan gave Forge its skeleton, Jason gave it its teeth. The modern offensive-security craft owes him a real debt — read the methodology, watch his talks, follow his work.
 
 **What Forge adds on top of PAI:**
-- 138 skills (up from ~10) including 24 ATT&CK-mapped offensive security playbooks, 15 GRC compliance frameworks, AI red-teaming via PyRIT, and 20+ specialized agents with distinct personalities
-- Security-first development with mandatory audit gates (OWASP, SAST)
+- 128 tracked skill definitions, including security playbooks, guidance for 15 GRC frameworks, and AI red-teaming via PyRIT, plus 27 agent definitions
+- Security review instructions covering OWASP and SAST, with enforcement configured separately
 - AI red-teaming pre-wired (Microsoft PyRIT) for jailbreak/prompt-injection testing of any LLM target
-- Compliance coverage at 95% accuracy across ISO 27001, SOC 2, FedRAMP, GDPR, HIPAA, NIST CSF, PCI DSS, TSA, ISO 27701, ISO 42001, DORA, DPDPA, CMMC 2.0, NIST AI RMF, SWIFT CSP
+- Framework-oriented compliance guidance for ISO 27001, SOC 2, FedRAMP, GDPR, HIPAA, NIST CSF, PCI DSS, TSA, ISO 27701, ISO 42001, DORA, DPDPA, CMMC 2.0, NIST AI RMF, SWIFT CSP
 - Real-time observability dashboard with WebSocket streaming
 - Privacy routing to local models (Ollama/Gemma4) for sensitive data
 - Multi-agent orchestration with parallel execution

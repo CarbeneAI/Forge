@@ -15,6 +15,7 @@ This is a contributor proposal for maintainer discussion, not an adopted release
 - Parse existing settings structurally, update only `env.PAI_DIR`, preserve unrelated parsed values and file mode, and reject malformed settings without rewriting them.
 - Make `pai-check` report required failures through its exit status, preserve the caller directory, and avoid loading credentials or running configured Git fsmonitor hooks. Settings and live services remain separate checks.
 - Align the README, Quick Start, and coding-agent checks with the shipped installer. Machine-local settings and hook registration remain separate setup responsibilities.
+- Document reproducible tracked-file counts and distinguish native Fabric prompts from the vendored snapshot. Qualify security, privacy, and platform claims against configured behavior and available validation.
 
 These checks do not validate every skill, install the full runtime, or establish WSL compatibility. See [Quick Start](docs/QUICKSTART.md) and [setup CI](.github/workflows/setup-tests.yml) for the current checks.
 
@@ -35,7 +36,9 @@ Acceptance criteria:
 
 Problem: skill names, counts, aliases, and hook instructions can drift as the repository changes.
 
-Proposed approach: derive a small inventory from tracked files and validate local documentation links and referenced commands.
+Current contribution: [the repository inventory](docs/REPOSITORY-INVENTORY.md) defines the counts and provides a read-only command to reproduce them. Automated drift enforcement is still proposed.
+
+Proposed approach: use that tracked-file inventory to validate local documentation links and referenced commands.
 
 Acceptance criteria:
 

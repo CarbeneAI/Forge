@@ -1,25 +1,27 @@
 ---
 name: Private
-description: Route prompts to local Gemma4 31B on Ollama for privacy-sensitive queries. USE WHEN user says '/private', 'private mode', 'local only', 'keep this local', 'don't send this to the cloud', OR when handling sensitive data (financial, medical, personal, client) that should never leave the local network.
+description: Route prompts to the configured Ollama endpoint, defaulting to localhost. USE WHEN the user requests '/private' or an Ollama query. Explain the session and endpoint data flow before treating this route as private; it does not isolate content already supplied to Claude Code.
 ---
 
 # Private - Local AI Privacy Router
 
-**Route queries to Gemma4 31B on your local Ollama server. Data never leaves your local machine.**
+**Route queries to the configured Ollama server.** The tool defaults to Gemma4 31B at `http://localhost:11434`; `OLLAMA_URL` can point to another server. This skill does not create an isolated session or guarantee that data stays on one machine.
 
 ## How It Works
 
 When invoked, this skill:
 1. Takes your prompt
-2. Sends it to Gemma4 31B via Ollama on `localhost:11434`
-3. Returns the response inline — Claude orchestrates, but **never sees your prompt content**
+2. Passes it as a command-line argument to the query tool, which sends it to the configured Ollama endpoint
+3. Returns the response inline in the same Claude Code session
+
+The prompt and response are visible in that session. Sending a prompt to Ollama does not remove content already entered into Claude Code.
 
 ## Usage
 
 ```
-/private What are the financial projections for client XYZ?
-/private Analyze this medical report: [paste]
-/private Review these employee performance notes
+/private Explain this synthetic financial example
+/private Summarize this public document
+/private Review these fictional meeting notes
 ```
 
 ## Workflow
@@ -53,26 +55,24 @@ bun ${PAI_DIR}/skills/Private/tools/private-query.ts "<prompt>"
 /private --temperature 0.3 <prompt>        # Lower temp for precision
 ```
 
-## Privacy Guarantees
+## Data Flow and Privacy
 
-- Data stays on your local machine — never sent to Anthropic, OpenAI, or any cloud
-- No logging by third parties
-- No API keys transmitted
-- Suitable for HIPAA/PCI-sensitive data
-- Ollama runs on localhost:11434 (not exposed externally by default)
+- Inspect `OLLAMA_URL` before use. Localhost is the fallback, not an enforced restriction; the tool can send requests to a remote server.
+- The surrounding Claude Code session can contain both the input and returned output. This skill does not change that session's processing, retention, or logging settings.
+- The query tool receives prompt text through command-line arguments. Review local process visibility, shell history, and tool logging for the environment where it runs.
+- A local endpoint alone does not establish HIPAA, PCI, or other compliance. Use synthetic or public inputs until the complete data flow and applicable controls have been reviewed.
+- The query tool's console message that data stays local is not an endpoint check or a privacy guarantee.
 
 ## When to Use
 
 | Scenario | Use /private? |
 |----------|--------------|
-| Client financial data | Yes |
-| Medical/health information | Yes |
-| Employee reviews or HR data | Yes |
-| Proprietary business strategy | Yes |
-| Code with trade secrets | Yes |
-| General coding questions | No — use Claude |
-| Web research needed | No — use Claude/Research |
-| Latest information needed | No — Ollama has training cutoff |
+| Synthetic or public examples | Yes, after checking the endpoint and model |
+| Confidential or regulated material | Only after reviewing the complete session, process, endpoint, and logging data flow |
+| A strict requirement that content never enters Claude Code | No; this skill operates inside the existing session |
+| General coding questions | Optional; select the model appropriate for the task |
+| Web research needed | No web-research tool is provided by this query tool |
+| Latest information needed | The query tool does not retrieve current sources |
 
 ## Limitations
 

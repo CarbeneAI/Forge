@@ -1,6 +1,6 @@
 # Forge Quick Start Guide
 
-Use `scripts/setup-new-machine.sh` from this repository to connect a Forge checkout to Claude Code. The installer runs in Bash on macOS and Linux; on Windows, use a Linux shell inside WSL. Shell helpers support Bash and Zsh.
+Use `scripts/setup-new-machine.sh` from this repository to connect a Forge checkout to Claude Code. The installer runs in Bash on macOS and Linux. WSL users can try it in a Linux shell, but a full WSL installation has not been validated. Shell helpers support Bash and Zsh.
 
 ## Install from a checkout
 
