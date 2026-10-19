@@ -497,6 +497,8 @@ pai-push   # Save changes
 
 ## Documentation
 
+See the [proposed contributor roadmap](ROADMAP.md) for setup reliability priorities and acceptance criteria for maintainer discussion.
+
 All core docs live in `.claude/skills/CORE/`:
 
 | Document | Description |
