@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - README.md
+      - .gitignore
       - CLAUDE.md
       - docs/QUICKSTART.md
       - ROADMAP.md
@@ -40,5 +41,5 @@ jobs:
           bash -n scripts/setup-new-machine.sh
           bash -n scripts/pai-aliases.sh
           zsh -n scripts/pai-aliases.sh
-      - name: Run isolated setup and Git helper fixtures
+      - name: Run isolated setup, credential-file, and Git helper fixtures
         run: python -m unittest discover -s tests -v

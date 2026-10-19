@@ -28,7 +28,7 @@ The script finds the checkout from its own file location, so the current working
 | Checkout validation | Requires a `.claude` directory before changing home configuration. |
 | `~/.claude` | Creates a symlink to the checkout's `.claude`; backs up an existing directory as `~/.claude.backup.<timestamp>`. Updates an existing symlink if it points elsewhere. |
 | `.claude/settings.json` | Updates an existing `PAI_DIR` entry to the absolute path of `~/.claude`. Warns when settings are absent; does not create the file or register hooks. |
-| `.claude/.env` | Keeps an existing file. Otherwise copies `.env.example`, or creates a minimal file if the template is absent. |
+| `.claude/.env` | Preserves existing regular-file contents and mode. Creates a missing file privately with mode `0600`; rejects symlink and non-regular destinations. |
 | Bun | Reuses an installed executable, or attempts installation through Homebrew on macOS when available, otherwise through the Bun installer. |
 | Shell configuration | Adds a safely quoted source line for `scripts/pai-aliases.sh` to an existing `.zshrc`, otherwise `.bashrc`. Keeps any existing line mentioning `pai-aliases.sh`. |
 | Local history | Creates `history/sessions`, `history/learnings`, and `history/raw-outputs` inside the checkout's `.claude`. |
@@ -120,7 +120,8 @@ zsh -n scripts/pai-aliases.sh
 python3 -m unittest discover -s tests -v
 ```
 
-The 13 tests require both Bash and Zsh. Eight exercise setup and navigation;
+The 23 tests require both Bash and Zsh. Ten exercise private credential creation,
+preservation, race handling, failure reporting, and ignore rules. Eight exercise setup and navigation;
 five exercise Git helper success and failure paths with fake Git and editor
 commands, including unchanged caller directories and no home mutations. No real
 Git push is invoked. Fixtures copy the actual scripts into disposable checkouts,
